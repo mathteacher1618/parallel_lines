@@ -1,0 +1,1726 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>平行線 - 香港小學數學</title>
+  <!-- 引入 html2canvas 程式庫以支援報告圖片下載 -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <style>
+    /* 全局樣式與 iPad 觸控優化 */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Microsoft JhengHei", sans-serif;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    body {
+      background-color: #f0f4f8;
+      color: #333;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      touch-action: manipulation;
+    }
+
+    /* 頂部導覽列 */
+    header {
+      background-color: #2b5278;
+      color: white;
+      padding: 15px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    header h1 {
+      font-size: 1.5rem;
+      font-weight: 600;
+    }
+
+    .lang-btn {
+      background-color: transparent;
+      border: 1px solid white;
+      color: white;
+      padding: 8px 18px;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: all 0.2s;
+      min-height: 44px;
+    }
+
+    .lang-btn:hover {
+      background-color: rgba(255, 255, 255, 0.2);
+    }
+
+    main {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .page-title {
+      text-align: center;
+      font-size: 1.8rem;
+      color: #2b5278;
+      margin-bottom: 30px;
+      font-weight: bold;
+    }
+
+    /* 首頁選單網格 */
+    .menu-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 12px;
+      padding: 30px 20px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      text-align: center;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      border: 2px solid transparent;
+      min-height: 150px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      position: relative;
+    }
+
+    .card:hover, .card:active {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+      border-color: #4a90e2;
+    }
+
+    .card.disabled-card {
+      opacity: 0.75;
+      background-color: #f8fafc;
+    }
+
+    .card h3 {
+      font-size: 1.4rem;
+      color: #1a365d;
+      margin-bottom: 12px;
+    }
+
+    .card p {
+      color: #666;
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+
+    .tag-disabled {
+      display: inline-block;
+      background-color: #edf2f7;
+      color: #718096;
+      font-size: 0.85rem;
+      padding: 2px 8px;
+      border-radius: 6px;
+      margin-left: 6px;
+      font-weight: normal;
+    }
+
+    /* 練習界面 */
+    .quiz-wrapper {
+      max-width: 820px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    .back-nav-btn {
+      background: white;
+      border: 1px solid #cbd5e0;
+      color: #4a5568;
+      padding: 10px 18px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1rem;
+      font-weight: bold;
+      margin-bottom: 15px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.04);
+      transition: all 0.2s;
+      min-height: 44px;
+    }
+
+    .back-nav-btn:hover {
+      background-color: #edf2f7;
+      color: #2b6cb0;
+    }
+
+    .quiz-card {
+      background: white;
+      border-radius: 16px;
+      padding: 30px;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+      width: 100%;
+    }
+
+    .quiz-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      border-bottom: 2px solid #edf2f7;
+      padding-bottom: 12px;
+    }
+
+    .quiz-progress {
+      font-size: 1.1rem;
+      font-weight: bold;
+      color: #3182ce;
+    }
+
+    .unit-tag {
+      background-color: #ebf8ff;
+      color: #2b6cb0;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 0.95rem;
+      font-weight: bold;
+    }
+
+    .tier-badge {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: 0.85rem;
+      font-weight: bold;
+      margin-left: 8px;
+    }
+    .tier-easy { background-color: #e6fffa; color: #234e52; border: 1px solid #b2f5ea; }
+    .tier-medium { background-color: #feebc8; color: #744210; border: 1px solid #fbd38d; }
+    .tier-hard { background-color: #fed7d7; color: #742a2a; border: 1px solid #feb2b2; }
+
+    /* 題目展示區 */
+    .question-display {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      margin: 10px 0 20px 0;
+      min-height: 200px;
+    }
+
+    .q-story-title {
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: #2d3748;
+      margin-bottom: 15px;
+      text-align: center;
+      line-height: 1.5;
+    }
+
+    /* 互動畫板區域 (SVG容器) - 確保內容居中 */
+    .canvas-container {
+      width: 100%;
+      max-width: 650px;
+      background-color: #ffffff;
+      border: 2px solid #e2e8f0;
+      border-radius: 14px;
+      padding: 15px;
+      box-shadow: inset 0 2px 6px rgba(0,0,0,0.02);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 15px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .line-svg, .grid-svg {
+      width: 100%;
+      height: auto;
+      max-height: 420px;
+      touch-action: none;
+      display: block;
+      margin: 0 auto;
+    }
+
+    /* 直線點選樣式 */
+    .interactive-line {
+      cursor: pointer;
+      transition: stroke 0.2s, stroke-width 0.2s;
+    }
+
+    .interactive-line-hitarea {
+      cursor: pointer;
+      stroke: transparent;
+      stroke-width: 32;
+      stroke-linecap: round;
+    }
+
+    .grid-node-hitarea {
+      cursor: pointer;
+      fill: transparent;
+    }
+
+    .grid-node-dot {
+      transition: r 0.2s, fill 0.2s;
+      pointer-events: none;
+    }
+
+    /* 按鈕樣式 */
+    .btn-group {
+      display: flex;
+      gap: 12px;
+      width: 100%;
+      margin-top: 10px;
+    }
+
+    .btn {
+      display: inline-block;
+      width: 100%;
+      padding: 14px;
+      font-size: 1.15rem;
+      font-weight: bold;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+      text-align: center;
+      min-height: 48px;
+    }
+
+    .btn:active { transform: scale(0.99); }
+    .btn-primary { background-color: #3182ce; color: white; }
+    .btn-primary:hover { background-color: #2b6cb0; }
+    .btn-success { background-color: #38a169; color: white; }
+    .btn-success:hover { background-color: #2f855a; }
+    .btn-purple { background-color: #8e44ad; color: white; margin-bottom: 10px; }
+    .btn-purple:hover { background-color: #7d3c98; }
+    .btn-sky { background-color: #38bdf8; color: white; margin-bottom: 10px; }
+    .btn-sky:hover { background-color: #0284c7; }
+    .btn-gray { background-color: #7f8c8d; color: white; }
+    .btn-gray:hover { background-color: #636e72; }
+    .btn-outline { background-color: transparent; border: 2px solid #cbd5e0; color: #4a5568; }
+    .btn-outline:hover { background-color: #f7fafc; }
+
+    /* 搖晃動畫 (答錯時) */
+    .shake-animation {
+      animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
+    }
+
+    @keyframes shake {
+      10%, 90% { transform: translate3d(-2px, 0, 0); }
+      20%, 80% { transform: translate3d(4px, 0, 0); }
+      30%, 50%, 70% { transform: translate3d(-6px, 0, 0); }
+      40%, 60% { transform: translate3d(6px, 0, 0); }
+    }
+
+    /* 反饋與提示訊息 */
+    .feedback-box {
+      margin-top: 20px;
+      padding: 18px;
+      border-radius: 12px;
+      text-align: left;
+      font-size: 1rem;
+      line-height: 1.6;
+    }
+
+    .feedback-success {
+      background-color: #c6f6d5;
+      color: #22543d;
+      border: 1px solid #9ae6b4;
+      text-align: center;
+    }
+
+    .feedback-warning {
+      background-color: #feebc8;
+      color: #744210;
+      border: 1px solid #fbd38d;
+    }
+
+    .feedback-danger {
+      background-color: #fff5f5;
+      color: #742a2a;
+      border: 1px solid #feb2b2;
+    }
+
+    /* 分析報告界面 */
+    .report-card {
+      background: white;
+      border-radius: 16px;
+      padding: 30px;
+      max-width: 680px;
+      margin: 0 auto;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+    }
+
+    .report-title {
+      text-align: center;
+      color: #3182ce;
+      font-size: 1.6rem;
+      margin-bottom: 20px;
+      font-weight: bold;
+    }
+
+    .report-section {
+      background-color: #f8fafc;
+      border-radius: 10px;
+      padding: 14px 20px;
+      margin-bottom: 16px;
+    }
+
+    .report-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 6px 0;
+      color: #4a5568;
+      font-size: 0.98rem;
+    }
+
+    .report-row.dashed {
+      border-bottom: 1px dashed #cbd5e0;
+    }
+
+    .report-val { font-weight: bold; }
+    .val-green { color: #276749; }
+    .val-red { color: #9b2c2c; }
+    .val-blue { color: #0284c7; }
+
+    .section-label {
+      font-weight: bold;
+      color: #2d3748;
+      margin: 18px 0 10px 0;
+      font-size: 1.05rem;
+    }
+
+    .list-box {
+      border-radius: 10px;
+      padding: 15px;
+      margin-bottom: 15px;
+    }
+
+    .list-box.correct-bg { background-color: #f7fafc; }
+    .list-box.wrong-bg { background-color: #f7fafc; }
+
+    .list-title {
+      font-weight: bold;
+      font-size: 1.05rem;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 12px;
+    }
+
+    .item-card-correct {
+      background: #f0fff4;
+      border: 1px solid #c6f6d5;
+      border-radius: 8px;
+      padding: 12px 16px;
+      margin-bottom: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      font-size: 0.95rem;
+      color: #22543d;
+    }
+
+    .item-card-wrong {
+      background: #fff5f5;
+      border: 1px solid #fed7d7;
+      border-radius: 8px;
+      padding: 12px 16px;
+      margin-bottom: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      font-size: 0.95rem;
+      color: #9b2c2c;
+    }
+
+    /* Modal 彈窗 */
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.5);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease;
+    }
+
+    .modal-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal-box {
+      background: white;
+      padding: 25px;
+      border-radius: 12px;
+      max-width: 420px;
+      width: 90%;
+      text-align: center;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    }
+
+    .modal-box h3 { margin-bottom: 12px; color: #2b5278; }
+    .modal-box p { margin-bottom: 20px; color: #4a5568; line-height: 1.5; }
+
+    .modal-buttons {
+      display: flex;
+      gap: 10px;
+    }
+
+    .hidden { display: none !important; }
+
+    @media (max-width: 768px) {
+      .quiz-card { padding: 20px 14px; }
+      .q-story-title { font-size: 1.1rem; }
+      .btn { font-size: 1rem; padding: 12px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 頂部導覽列 -->
+  <header>
+    <h1 id="header-title">平行線</h1>
+    <button id="lang-toggle-btn" class="lang-btn" onclick="toggleLanguage()">English</button>
+  </header>
+
+  <main>
+    <div class="container">
+
+      <!-- 1. 首頁選擇界面 -->
+      <div id="page-home">
+        <h2 id="home-subtitle" class="page-title">請選擇學習單元</h2>
+        <div class="menu-grid">
+          <div class="card disabled-card" onclick="clickUnit1()">
+            <h3><span id="title-unit1">單元一：分辨平行線</span> <span class="tag-disabled" id="tag-unit1-status">(暫未開放)</span></h3>
+            <p id="desc-opt1">練習在不同圖形及線段中，辨識並點選出互相平行的直線組。（目前維護中）</p>
+          </div>
+          <div class="card" onclick="startQuiz('unit2')">
+            <h3 id="title-unit2">單元二：繪畫平行線</h3>
+            <p id="desc-opt2">練習在虛線圖及 8x5 方格紙上，點選線段或點連成與原黑線平行的直線。</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. 答題界面 -->
+      <div id="page-quiz" class="hidden">
+        <div class="quiz-wrapper">
+          <button class="back-nav-btn" onclick="askReturnHome()">
+            <span id="lbl-back-btn">← 返回單元選擇</span>
+          </button>
+
+          <div class="quiz-card">
+            <div class="quiz-header">
+              <div>
+                <span id="quiz-mode-name" class="unit-tag">單元二：繪畫平行線</span>
+                <span id="quiz-tier-badge" class="tier-badge tier-easy">初階</span>
+              </div>
+              <span id="quiz-progress-text" class="quiz-progress">題目 1 / 10</span>
+            </div>
+
+            <!-- 題目動態渲染區 -->
+            <div id="question-display-area" class="question-display"></div>
+
+            <!-- 操作與提交區域 -->
+            <div id="action-area">
+              <div class="btn-group">
+                <button id="btn-reset-selection" class="btn btn-outline hidden" onclick="resetCurrentSelection()">重選連線 / 點</button>
+                <button id="btn-submit" class="btn btn-primary" onclick="checkAnswer()">提交答案</button>
+                <button id="btn-next" class="btn btn-success hidden" onclick="nextQuestion()">再答一題 ➔</button>
+              </div>
+            </div>
+
+            <!-- 解題反饋區 -->
+            <div id="feedback-area" class="hidden"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. 表現分析報告 -->
+      <div id="page-report" class="hidden">
+        <div id="report-card-to-capture" class="report-card">
+          <h2 id="report-main-title" class="report-title">練習完成！表現分析報告</h2>
+
+          <div class="report-section">
+            <div class="report-row dashed">
+              <span id="lbl-start-time">開始時間：</span>
+              <span id="val-start-time" class="report-val">--</span>
+            </div>
+            <div class="report-row dashed">
+              <span id="lbl-end-time">完成時間：</span>
+              <span id="val-end-time" class="report-val">--</span>
+            </div>
+            <div class="report-row">
+              <span id="lbl-duration">總用時：</span>
+              <span id="val-duration" class="report-val val-blue">--</span>
+            </div>
+          </div>
+
+          <div class="report-section">
+            <div class="report-row dashed">
+              <span id="lbl-total-correct">總答對題數：</span>
+              <span id="val-correct-count" class="report-val val-green">0 / 10</span>
+            </div>
+            <div class="report-row">
+              <span id="lbl-accuracy">整體正確率：</span>
+              <span id="val-accuracy" class="report-val">0%</span>
+            </div>
+          </div>
+
+          <div class="section-label" id="lbl-mastery-title">各主題掌握度分析</div>
+          <div class="report-section">
+            <div class="report-row">
+              <span id="report-unit-name">單元二：繪畫平行線</span>
+              <span id="val-unit-mastery" class="report-val">0 / 10 (0%)</span>
+            </div>
+          </div>
+
+          <div class="list-box correct-bg">
+            <div class="list-title val-green">
+              <span>☑</span> <span id="lbl-correct-title">答對的題目</span>
+            </div>
+            <div id="correct-list-container"></div>
+          </div>
+
+          <div class="list-box wrong-bg">
+            <div class="list-title val-red">
+              <span>✕</span> <span id="lbl-wrong-title">答錯 / 需要協助的題目</span>
+            </div>
+            <div id="wrong-list-container"></div>
+          </div>
+
+          <div data-html2canvas-ignore="true" style="margin-top: 20px;">
+            <button class="btn btn-purple" onclick="downloadReportImage()"><span id="lbl-btn-download">💾 下載報告圖片</span></button>
+            <button class="btn btn-sky" onclick="retryPractice()"><span id="lbl-btn-retry">🔄 我想再試</span></button>
+            <button class="btn btn-gray" onclick="goHome()"><span id="lbl-btn-home">回到主頁重新選擇</span></button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- 通用 Modal 彈窗 -->
+  <div id="custom-modal" class="modal-overlay">
+    <div class="modal-box">
+      <h3 id="modal-title">標題</h3>
+      <p id="modal-msg">內容訊息</p>
+      <div class="modal-buttons">
+        <button id="modal-cancel-btn" class="btn btn-gray" style="flex: 1;" onclick="closeModal()">取消</button>
+        <button id="modal-confirm-btn" class="btn btn-primary" style="flex: 1;" onclick="confirmModalAction()">確定</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // 多語言字典
+    const i18n = {
+      zh: {
+        headerTitle: "平行線",
+        langBtn: "English",
+        homeSubtitle: "請選擇學習單元",
+        titleUnit1: "單元一：分辨平行線",
+        titleUnit2: "單元二：繪畫平行線",
+        descOpt1: "練習在不同圖形及線段中，辨識並點選出互相平行的直線組。（目前維護中）",
+        descOpt2: "練習在虛線圖及 8x5 方格紙上，點選線段或點連成與原黑線平行的直線。",
+        tagUnit1Status: "(暫未開放)",
+        unit1: "單元一：分辨平行線",
+        unit2: "單元二：繪畫平行線",
+        tierEasy: "初階",
+        tierMedium: "中階",
+        tierHard: "高階",
+        qProgress: "題目",
+        questionLabel: "第 {n} 題",
+        ansLabel: "答案",
+        yourAnsLabel: "你的回答",
+        correctAnsLabel: "正確答案",
+        backBtn: "← 返回單元選擇",
+        submitBtn: "提交答案",
+        nextBtn: "再答一題 ➔",
+        resetBtn: "重選連線 / 點",
+        praise: ["太棒了！答對了！🌟", "非常優秀，完全正確！👏", "答對了！繼續保持！🎉", "真聰明！完全掌握了平行線的特性！💪"],
+        encourage: ["再試一次！仔細觀察直線的方向與傾斜角度！", "沒關係，重新觀察一下線段延長後是否會相交！", "加油！重新點選試試看！"],
+        noWrong: "太厲害了！沒有答錯的題目！",
+        noCorrect: "無答對題目",
+        reportTitle: "練習完成！表現分析報告",
+        startTime: "開始時間：",
+        endTime: "完成時間：",
+        durationTime: "總用時：",
+        totalCorrect: "總答對題數：",
+        accuracy: "整體正確率：",
+        masteryTitle: "各主題掌握度分析",
+        correctTitle: "答對的題目",
+        wrongTitle: "答錯 / 需要協助的題目",
+        btnDownload: "💾 下載報告圖片",
+        btnRetry: "🔄 我想再試",
+        btnHome: "回到主頁重新選擇",
+        modalReturnTitle: "返回單元選擇",
+        modalReturnMsg: "確定要返回主選單嗎？目前的答題進度將不會被保存。",
+        unit1UnavailableTitle: "單元一暫未開放",
+        unit1UnavailableMsg: "單元一「分辨平行線」目前暫未開放，請選擇「單元二：繪畫平行線」進行練習！",
+        stepTitle: "完整解題思路：",
+        u2_line_prompt: "請沿著虛線畫出一組平行線（點選後會變為實線）：",
+        u2_grid_prompt: "請點選方格紙上的 2 個點，連成一條與黑線互相平行的直線（不可與黑線重疊）：",
+        gridSolutionText: "解題說明：方格紙上以<strong style='color:#16a34a;'>綠色標示平行線參考答案</strong>（與黑線互相平行）。<br><span style='color:#dc2626;'>紅色虛線延伸顯示您選取的直線與黑線在相交點（✕）相交，因此並不平行。</span>",
+        lineSolutionText: "解題說明：<strong style='color:#16a34a;'>綠色高亮與延伸線為互相平行的直線組</strong>。<br><span style='color:#dc2626;'>紅色延伸虛線顯示您點選的錯誤直線在延長後與綠色平行線在相交點（✕）相交。</span>",
+        selectedPointsMsg: "已點選 {n} 個點。需要點選 2 個點來連成直線。"
+      },
+      en: {
+        headerTitle: "Parallel Lines",
+        langBtn: "繁體中文",
+        homeSubtitle: "Please Select a Learning Unit",
+        titleUnit1: "Unit 1: Identify Parallel Lines",
+        titleUnit2: "Unit 2: Draw Parallel Lines",
+        descOpt1: "Practice identifying parallel line sets from different figures. (Under maintenance)",
+        descOpt2: "Practice selecting line segments or grid nodes to draw parallel lines.",
+        tagUnit1Status: "(Not Available)",
+        unit1: "Unit 1: Identify Parallel Lines",
+        unit2: "Unit 2: Draw Parallel Lines",
+        tierEasy: "Easy",
+        tierMedium: "Medium",
+        tierHard: "Hard",
+        qProgress: "Question",
+        questionLabel: "Q{n}",
+        ansLabel: "Ans",
+        yourAnsLabel: "Your Answer",
+        correctAnsLabel: "Correct Answer",
+        backBtn: "← Back to Stage Selection",
+        submitBtn: "Submit Answer",
+        nextBtn: "Next Question ➔",
+        resetBtn: "Reset Selection",
+        praise: ["Great job! That's correct! 🌟", "Excellent! You got it right! 👏", "Correct! Keep it up! 🎉", "Awesome! You mastered parallel lines! 💪"],
+        encourage: ["Try again! Observe line directions carefully!", "Take another look at whether lines intersect when extended!", "Keep going! Give it another try!"],
+        noWrong: "Amazing! No incorrect answers!",
+        noCorrect: "No correct questions",
+        reportTitle: "Practice Completed! Performance Report",
+        startTime: "Start Time:",
+        endTime: "Completion Time:",
+        durationTime: "Time Taken:",
+        totalCorrect: "Total Correct:",
+        accuracy: "Overall Accuracy:",
+        masteryTitle: "Topic Mastery Analysis",
+        correctTitle: "Correct Questions",
+        wrongTitle: "Incorrect / Needs Assistance",
+        btnDownload: "💾 Download Report Image",
+        btnRetry: "🔄 Try Again",
+        btnHome: "Back to Home",
+        modalReturnTitle: "Return to Stage Selection",
+        modalReturnMsg: "Are you sure you want to return to home? Current progress will be lost.",
+        unit1UnavailableTitle: "Unit 1 Coming Soon",
+        unit1UnavailableMsg: "Unit 1 is currently unavailable. Please select Unit 2 to practice!",
+        stepTitle: "Solution Breakdown:",
+        u2_line_prompt: "Please draw a group of parallel lines along the dashed lines (turns solid when tapped):",
+        u2_grid_prompt: "Tap 2 points on the grid paper to draw a line parallel to the black line (cannot overlap):",
+        gridSolutionText: "Solution Breakdown: The <strong style='color:#16a34a;'>GREEN line shows a sample parallel line</strong> (parallel to black line).<br><span style='color:#dc2626;'>Red dashed extensions show where your line intersects (✕) the original black line.</span>",
+        lineSolutionText: "Solution Breakdown: <strong style='color:#16a34a;'>GREEN lines and extensions form the parallel set</strong>.<br><span style='color:#dc2626;'>Red dashed lines extend your incorrect choice to show the intersection point (✕).</span>",
+        selectedPointsMsg: "Selected {n} point(s). Please select 2 points to form a line."
+      }
+    };
+
+    let currentLang = 'zh';
+    let currentMode = 'unit2';
+    let questions = [];
+    let currentQIndex = 0;
+    let wrongAttempts = 0;
+    let records = [];
+    let startTimeObj = null;
+    let modalActionCallback = null;
+
+    // 作答狀態（直線點選或網格點選）
+    let selectedLineIndices = [];
+    let selectedGridNodes = [];
+
+    // 隨機整數輔助
+    function getRandomInt(min, max) {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    // 從陣列隨機選一個元素
+    function getRandomChoice(arr) {
+      return arr[Math.floor(Math.random() * arr.length)];
+    }
+
+    // 洗牌函式
+    function shuffleArray(arr) {
+      const array = [...arr];
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+      return array;
+    }
+
+    /* -------------------------------------------------------------
+       單元一點選提示：暫未開放
+    ------------------------------------------------------------- */
+    function clickUnit1() {
+      const t = i18n[currentLang];
+      showCustomModal(t.unit1UnavailableTitle, t.unit1UnavailableMsg, null);
+    }
+
+    /* -------------------------------------------------------------
+       繪製平行線問答的動態隨機生成器 (包含長短變化、位置隔開與動態不重複)
+    ------------------------------------------------------------- */
+    function generateRandomLineQuestion(tier, targetCount) {
+      // 隨機選一個目標平行線傾角 (度數)
+      const candidateAngles = [-65, -50, -35, -20, 0, 15, 30, 45, 60, 75];
+      const targetAngleDeg = getRandomChoice(candidateAngles);
+      const targetRad = (targetAngleDeg * Math.PI) / 180;
+
+      // 平行線方向向量與法向向量
+      const ux = Math.cos(targetRad);
+      const uy = Math.sin(targetRad);
+      const nx = -uy;
+      const ny = ux;
+
+      const centerX = 250;
+      const centerY = 160;
+
+      const lines = [];
+
+      // 1. 生成 targetCount 條平行線 (加入長度有長有短、位置前後錯位與大幅隔開間距)
+      const spacings = [];
+      let currentOffset = -(targetCount - 1) * getRandomInt(40, 60);
+      for (let i = 0; i < targetCount; i++) {
+        spacings.push(currentOffset);
+        currentOffset += getRandomInt(75, 120); // 隔開一點，拉大間距
+      }
+
+      for (let i = 0; i < targetCount; i++) {
+        const offset = spacings[i];
+        const shift = getRandomInt(-65, 65); // 前後位置交錯
+        const len = getRandomInt(140, 310);   // 長度有長有短 (140px ~ 310px)
+
+        const cx = centerX + offset * nx + shift * ux;
+        const cy = centerY + offset * ny + shift * uy;
+
+        const halfL = len / 2;
+        lines.push({
+          x1: Math.round(cx - halfL * ux),
+          y1: Math.round(cy - halfL * uy),
+          x2: Math.round(cx + halfL * ux),
+          y2: Math.round(cy + halfL * uy),
+          isParallel: true,
+          group: 1
+        });
+      }
+
+      // 2. 生成干擾線 (初階 3 條，中階 4 條；夾角均相差 25° 以上，絕不平行)
+      const distractorCount = targetCount === 2 ? 3 : 4;
+      const usedAngles = [targetAngleDeg];
+
+      for (let d = 0; d < distractorCount; d++) {
+        let dAngle;
+        let attempts = 0;
+        do {
+          dAngle = getRandomInt(-80, 95);
+          attempts++;
+        } while (
+          usedAngles.some(a => {
+            let diff = Math.abs(a - dAngle) % 180;
+            if (diff > 90) diff = 180 - diff;
+            return diff < 25;
+          }) && attempts < 100
+        );
+
+        usedAngles.push(dAngle);
+        const dRad = (dAngle * Math.PI) / 180;
+        const dux = Math.cos(dRad);
+        const duy = Math.sin(dRad);
+
+        const dLen = getRandomInt(160, 290);
+        const dShiftX = getRandomInt(-90, 90);
+        const dShiftY = getRandomInt(-70, 70);
+        const dcx = centerX + dShiftX;
+        const dcy = centerY + dShiftY;
+
+        const dHalfL = dLen / 2;
+        lines.push({
+          x1: Math.round(dcx - dHalfL * dux),
+          y1: Math.round(dcy - dHalfL * duy),
+          x2: Math.round(dcx + dHalfL * dux),
+          y2: Math.round(dcy + dHalfL * duy),
+          isParallel: false
+        });
+      }
+
+      return shuffleArray(lines);
+    }
+
+    /* -------------------------------------------------------------
+       單元二題目動態產生 (10 題：初階4題 -> 中階3題 -> 高階3題，每次隨機不重覆)
+    ------------------------------------------------------------- */
+    function generateUnit2Questions() {
+      const qList = [];
+
+      // --- 初階 Q1 & Q2：5 條虛線，2 條平行線 (長短與位置變化) ---
+      qList.push({
+        unit: 2, tier: 'easy', type: 'select_lines', targetCount: 2, titleKey: 'u2_line_prompt',
+        lines: generateRandomLineQuestion('easy', 2)
+      });
+      qList.push({
+        unit: 2, tier: 'easy', type: 'select_lines', targetCount: 2, titleKey: 'u2_line_prompt',
+        lines: generateRandomLineQuestion('easy', 2)
+      });
+
+      // --- 初階 Q3：8x5 方格紙 - 5格垂直黑線 (隨機位置) ---
+      const vx = getRandomInt(1, 6);
+      qList.push({
+        unit: 2, tier: 'easy', type: 'grid_draw', orientation: 'vertical', titleKey: 'u2_grid_prompt',
+        baseLine: { x1: vx, y1: 0, x2: vx, y2: 5 }
+      });
+
+      // --- 初階 Q4：8x5 方格紙 - 5格水平黑線 (隨機位置) ---
+      const hy = getRandomInt(1, 4);
+      const hxStart = getRandomInt(0, 3);
+      qList.push({
+        unit: 2, tier: 'easy', type: 'grid_draw', orientation: 'horizontal', titleKey: 'u2_grid_prompt',
+        baseLine: { x1: hxStart, y1: hy, x2: hxStart + 5, y2: hy }
+      });
+
+      // --- 中階 Q5, Q6, Q7：7 條虛線，3 條平行線 (長短與位置變化) ---
+      qList.push({
+        unit: 2, tier: 'medium', type: 'select_lines', targetCount: 3, titleKey: 'u2_line_prompt',
+        lines: generateRandomLineQuestion('medium', 3)
+      });
+      qList.push({
+        unit: 2, tier: 'medium', type: 'select_lines', targetCount: 3, titleKey: 'u2_line_prompt',
+        lines: generateRandomLineQuestion('medium', 3)
+      });
+      qList.push({
+        unit: 2, tier: 'medium', type: 'select_lines', targetCount: 3, titleKey: 'u2_line_prompt',
+        lines: generateRandomLineQuestion('medium', 3)
+      });
+
+      // --- 高階 Q8, Q9, Q10：8x5 方格紙 - 斜放黑線 (隨機選擇斜率與位置) ---
+      const hardOptionsPool = [
+        { x1: 0, y1: 4, x2: 4, y2: 0 },
+        { x1: 1, y1: 5, x2: 5, y2: 1 },
+        { x1: 2, y1: 4, x2: 6, y2: 0 },
+        { x1: 0, y1: 1, x2: 4, y2: 5 },
+        { x1: 1, y1: 1, x2: 5, y2: 4 },
+        { x1: 0, y1: 0, x2: 4, y2: 3 },
+        { x1: 2, y1: 0, x2: 6, y2: 3 },
+        { x1: 3, y1: 1, x2: 7, y2: 4 },
+        { x1: 1, y1: 4, x2: 5, y2: 1 },
+        { x1: 0, y1: 3, x2: 4, y2: 0 },
+        { x1: 2, y1: 5, x2: 6, y2: 2 },
+        { x1: 3, y1: 4, x2: 7, y2: 1 }
+      ];
+      const selectedHardBases = shuffleArray(hardOptionsPool).slice(0, 3);
+
+      qList.push({
+        unit: 2, tier: 'hard', type: 'grid_draw', orientation: 'slanted', titleKey: 'u2_grid_prompt',
+        baseLine: selectedHardBases[0]
+      });
+      qList.push({
+        unit: 2, tier: 'hard', type: 'grid_draw', orientation: 'slanted', titleKey: 'u2_grid_prompt',
+        baseLine: selectedHardBases[1]
+      });
+      qList.push({
+        unit: 2, tier: 'hard', type: 'grid_draw', orientation: 'slanted', titleKey: 'u2_grid_prompt',
+        baseLine: selectedHardBases[2]
+      });
+
+      return qList;
+    }
+
+    // 啟動測驗
+    function startQuiz(mode) {
+      currentMode = mode;
+      if (mode === 'unit1') {
+        clickUnit1();
+        return;
+      }
+
+      questions = generateUnit2Questions();
+      currentQIndex = 0;
+      records = [];
+      startTimeObj = new Date();
+
+      document.getElementById('page-home').classList.add('hidden');
+      document.getElementById('page-report').classList.add('hidden');
+      document.getElementById('page-quiz').classList.remove('hidden');
+
+      loadQuestion();
+    }
+
+    function loadQuestion() {
+      wrongAttempts = 0;
+      selectedLineIndices = [];
+      selectedGridNodes = [];
+
+      const quizCard = document.querySelector('.quiz-card');
+      if (quizCard) {
+        quizCard.classList.remove('shake-animation');
+      }
+
+      const t = i18n[currentLang];
+      const q = questions[currentQIndex];
+
+      document.getElementById('quiz-mode-name').innerText = t.unit2;
+      const tierBadge = document.getElementById('quiz-tier-badge');
+      if (q.tier === 'easy') {
+        tierBadge.className = 'tier-badge tier-easy';
+        tierBadge.innerText = t.tierEasy;
+      } else if (q.tier === 'medium') {
+        tierBadge.className = 'tier-badge tier-medium';
+        tierBadge.innerText = t.tierMedium;
+      } else {
+        tierBadge.className = 'tier-badge tier-hard';
+        tierBadge.innerText = t.tierHard;
+      }
+
+      document.getElementById('quiz-progress-text').innerText = `${t.qProgress} ${currentQIndex + 1} / ${questions.length}`;
+
+      const displayArea = document.getElementById('question-display-area');
+      displayArea.innerHTML = '';
+
+      const storyTitleText = t[q.titleKey];
+
+      const canvasContainer = document.createElement('div');
+      canvasContainer.className = 'canvas-container';
+
+      if (q.type === 'select_lines') {
+        document.getElementById('btn-reset-selection').classList.add('hidden');
+        canvasContainer.innerHTML = renderLinesSVG(q.lines, false);
+      } else {
+        document.getElementById('btn-reset-selection').classList.remove('hidden');
+        canvasContainer.innerHTML = renderGridSVG(q.baseLine, [], false);
+      }
+
+      displayArea.appendChild(canvasContainer);
+
+      const qTitleEl = document.createElement('div');
+      qTitleEl.className = 'q-story-title';
+      qTitleEl.innerText = storyTitleText;
+      displayArea.insertBefore(qTitleEl, canvasContainer);
+
+      document.getElementById('feedback-area').classList.add('hidden');
+      document.getElementById('feedback-area').innerHTML = '';
+      document.getElementById('btn-submit').classList.remove('hidden');
+      document.getElementById('btn-next').classList.add('hidden');
+      document.getElementById('btn-submit').innerText = t.submitBtn;
+    }
+
+    /* -------------------------------------------------------------
+       SVG 渲染：直線選擇題
+    ------------------------------------------------------------- */
+    function renderLinesSVG(lines, showSolution, wrongLineIndices = []) {
+      let content = '';
+
+      lines.forEach((line, idx) => {
+        const isSelected = selectedLineIndices.includes(idx);
+
+        if (!showSolution) {
+          // 常規答題模式
+          const strokeColor = isSelected ? '#1e293b' : '#64748b';
+          const strokeDash = isSelected ? 'none' : '6 6';
+          const strokeWidth = isSelected ? 4 : 3;
+
+          content += `
+            <g onclick="toggleLineSelection(${idx})">
+              <!-- 熱點區域 (方便 iPad 觸控) -->
+              <line x1="${line.x1}" y1="${line.y1}" x2="${line.x2}" y2="${line.y2}" class="interactive-line-hitarea" />
+              <!-- 顯示的線段 -->
+              <line x1="${line.x1}" y1="${line.y1}" x2="${line.x2}" y2="${line.y2}" 
+                    stroke="${strokeColor}" stroke-dasharray="${strokeDash}" stroke-width="${strokeWidth}" stroke-linecap="round" class="interactive-line" />
+              ${isSelected ? `<circle cx="${(line.x1+line.x2)/2}" cy="${(line.y1+line.y2)/2}" r="5" fill="#2563eb" />` : ''}
+            </g>
+          `;
+        } else {
+          // 題解模式：綠色高亮與延長正解，紅色延伸學生選錯的線至相交點
+          if (line.isParallel) {
+            // 正確平行線：綠色高亮 + 兩端延伸綠色虛線
+            const dx = line.x2 - line.x1;
+            const dy = line.y2 - line.y1;
+            const extX1 = line.x1 - dx * 0.4;
+            const extY1 = line.y1 - dy * 0.4;
+            const extX2 = line.x2 + dx * 0.4;
+            const extY2 = line.y2 + dy * 0.4;
+
+            content += `
+              <line x1="${extX1}" y1="${extY1}" x2="${extX2}" y2="${extY2}" stroke="#16a34a" stroke-dasharray="4 4" stroke-width="2.5" />
+              <line x1="${line.x1}" y1="${line.y1}" x2="${line.x2}" y2="${line.y2}" stroke="#16a34a" stroke-width="5" stroke-linecap="round" />
+              <circle cx="${(line.x1+line.x2)/2}" cy="${(line.y1+line.y2)/2}" r="6" fill="#16a34a" />
+            `;
+          } else if (wrongLineIndices.includes(idx)) {
+            // 學生點選錯的直線：紅色實線，並找一條正解綠線計算真實相交點
+            const targetLine = lines.find(l => l.isParallel);
+            const inter = calculateIntersection(line, targetLine);
+
+            content += `
+              <line x1="${line.x1}" y1="${line.y1}" x2="${line.x2}" y2="${line.y2}" stroke="#dc2626" stroke-width="4" stroke-linecap="round" />
+            `;
+
+            if (inter) {
+              // 從線段近端點向相交點畫紅色虛線
+              const dist1 = Math.hypot(line.x1 - inter.x, line.y1 - inter.y);
+              const dist2 = Math.hypot(line.x2 - inter.x, line.y2 - inter.y);
+              const nearX = dist1 < dist2 ? line.x1 : line.x2;
+              const nearY = dist1 < dist2 ? line.y1 : line.y2;
+
+              content += `
+                <line x1="${nearX}" y1="${nearY}" x2="${inter.x}" y2="${inter.y}" stroke="#dc2626" stroke-dasharray="4 4" stroke-width="2.5" />
+                <circle cx="${inter.x}" cy="${inter.y}" r="12" fill="none" stroke="#dc2626" stroke-width="2" />
+                <text x="${inter.x}" y="${inter.y + 4}" font-size="12" font-weight="bold" fill="#dc2626" text-anchor="middle">✕</text>
+                <text x="${inter.x}" y="${inter.y + 24}" font-size="12" font-weight="bold" fill="#dc2626" text-anchor="middle">相交點 ✕</text>
+              `;
+            }
+          } else {
+            // 其他未選干擾線淡化
+            content += `
+              <line x1="${line.x1}" y1="${line.y1}" x2="${line.x2}" y2="${line.y2}" stroke="#94a3b8" stroke-dasharray="6 6" stroke-width="2.5" stroke-linecap="round" opacity="0.6" />
+            `;
+          }
+        }
+      });
+
+      return `
+        <svg viewBox="0 0 500 320" class="line-svg">
+          ${content}
+        </svg>
+      `;
+    }
+
+    // 計算兩直線相交點 (2D 直線交點公式)
+    function calculateIntersection(l1, l2) {
+      const x1 = l1.x1, y1 = l1.y1, x2 = l1.x2, y2 = l1.y2;
+      const x3 = l2.x1, y3 = l2.y1, x4 = l2.x2, y4 = l2.y2;
+
+      const denom = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4);
+      if (Math.abs(denom) < 1e-4) return null; // 平行無單一交點
+
+      const px = ((x1*y2 - y1*x2)*(x3 - x4) - (x1 - x2)*(x3*y4 - y3*x4)) / denom;
+      const py = ((x1*y2 - y1*x2)*(y3 - y4) - (y1 - y2)*(x3*y4 - y3*x4)) / denom;
+
+      return { x: px, y: py };
+    }
+
+    // 計算最大公因數
+    function gcd(a, b) {
+      return b === 0 ? Math.abs(a) : gcd(b, a % b);
+    }
+
+    // 尋找 100% 完全落在方格紙內 (8x5) 的正解平行綠線
+    function getValidGridSolutionLine(b) {
+      const dx = b.x2 - b.x1;
+      const dy = b.y2 - b.y1;
+
+      // 候選平移向量
+      const candidateShifts = [
+        {ox: 0, oy: 1}, {ox: 0, oy: -1}, {ox: 1, oy: 0}, {ox: -1, oy: 0},
+        {ox: 0, oy: 2}, {ox: 0, oy: -2}, {ox: 2, oy: 0}, {ox: -2, oy: 0},
+        {ox: 1, oy: 1}, {ox: -1, oy: -1}, {ox: 1, oy: -1}, {ox: -1, oy: 1},
+        {ox: 0, oy: 3}, {ox: 0, oy: -3}, {ox: 3, oy: 0}, {ox: -3, oy: 0},
+        {ox: 2, oy: 2}, {ox: -2, oy: -2}, {ox: 2, oy: -2}, {ox: -2, oy: 2}
+      ];
+
+      for (let shift of candidateShifts) {
+        // 排除與原黑線共線的平移
+        if (shift.ox * dy === shift.oy * dx) continue;
+
+        const sx1 = b.x1 + shift.ox;
+        const sy1 = b.y1 + shift.oy;
+        const sx2 = b.x2 + shift.ox;
+        const sy2 = b.y2 + shift.oy;
+
+        if (sx1 >= 0 && sx1 <= 8 && sx2 >= 0 && sx2 <= 8 &&
+            sy1 >= 0 && sy1 <= 5 && sy2 >= 0 && sy2 <= 5) {
+          return { x1: sx1, y1: sy1, x2: sx2, y2: sy2 };
+        }
+      }
+
+      // 備用搜尋：在畫布內尋找任何不共線且平行的子線段
+      const g = gcd(dx, dy) || 1;
+      const stepX = dx / g;
+      const stepY = dy / g;
+
+      for (let gy = 0; gy <= 5; gy++) {
+        for (let gx = 0; gx <= 8; gx++) {
+          const px1 = gx, py1 = gy;
+          const px2 = gx + stepX, py2 = gy + stepY;
+          if (px2 >= 0 && px2 <= 8 && py2 >= 0 && py2 <= 5) {
+            if ((px1 - b.x1) * dy !== (py1 - b.y1) * dx) {
+              return { x1: px1, y1: py1, x2: px2, y2: py2 };
+            }
+          }
+        }
+      }
+      return { x1: 0, y1: 0, x2: 1, y2: 0 };
+    }
+
+    /* -------------------------------------------------------------
+       SVG 渲染：方格紙題型
+    ------------------------------------------------------------- */
+    function renderGridSVG(baseLine, userNodes, showSolution, solutionLine = null) {
+      const startX = 50;
+      const startY = 35;
+      const step = 50;
+
+      let gridLines = '';
+      // 8 格 x 5 格網格線
+      for (let c = 0; c <= 8; c++) {
+        const x = startX + c * step;
+        gridLines += `<line x1="${x}" y1="${startY}" x2="${x}" y2="${startY + 5*step}" stroke="#7dd3fc" stroke-width="1.5" />`;
+      }
+      for (let r = 0; r <= 5; r++) {
+        const y = startY + r * step;
+        gridLines += `<line x1="${startX}" y1="${y}" x2="${startX + 8*step}" y2="${y}" stroke="#7dd3fc" stroke-width="1.5" />`;
+      }
+
+      // 基準黑線
+      const bx1 = startX + baseLine.x1 * step;
+      const by1 = startY + baseLine.y1 * step;
+      const bx2 = startX + baseLine.x2 * step;
+      const by2 = startY + baseLine.y2 * step;
+
+      let baseLineSVG = `<line x1="${bx1}" y1="${by1}" x2="${bx2}" y2="${by2}" stroke="#0f172a" stroke-width="5" stroke-linecap="round" />`;
+
+      // 使用者劃設的線
+      let userLineSVG = '';
+      if (userNodes.length === 2) {
+        const ux1 = startX + userNodes[0].gx * step;
+        const uy1 = startY + userNodes[0].gy * step;
+        const ux2 = startX + userNodes[1].gx * step;
+        const uy2 = startY + userNodes[1].gy * step;
+
+        const lineColor = showSolution ? '#dc2626' : '#2563eb';
+        userLineSVG = `<line x1="${ux1}" y1="${uy1}" x2="${ux2}" y2="${uy2}" stroke="${lineColor}" stroke-width="4.5" stroke-linecap="round" />`;
+
+        if (showSolution) {
+          // 如果答錯在題解模式下，延伸學生選取的紅色虛線顯示相交
+          const userLineObj = { x1: ux1, y1: uy1, x2: ux2, y2: uy2 };
+          const baseLineObj = { x1: bx1, y1: by1, x2: bx2, y2: by2 };
+          const inter = calculateIntersection(userLineObj, baseLineObj);
+
+          if (inter) {
+            const dist1 = Math.hypot(ux1 - inter.x, uy1 - inter.y);
+            const dist2 = Math.hypot(ux2 - inter.x, uy2 - inter.y);
+            const nearX = dist1 < dist2 ? ux1 : ux2;
+            const nearY = dist1 < dist2 ? uy1 : uy2;
+
+            userLineSVG += `
+              <line x1="${nearX}" y1="${nearY}" x2="${inter.x}" y2="${inter.y}" stroke="#dc2626" stroke-dasharray="4 4" stroke-width="2.5" />
+              <circle cx="${inter.x}" cy="${inter.y}" r="12" fill="none" stroke="#dc2626" stroke-width="2" />
+              <text x="${inter.x}" y="${inter.y + 4}" font-size="12" font-weight="bold" fill="#dc2626" text-anchor="middle">✕</text>
+            `;
+          }
+        }
+      }
+
+      // 正解綠線 (在題解模式下顯示)
+      let solutionSVG = '';
+      if (showSolution && solutionLine) {
+        const sx1 = startX + solutionLine.x1 * step;
+        const sy1 = startY + solutionLine.y1 * step;
+        const sx2 = startX + solutionLine.x2 * step;
+        const sy2 = startY + solutionLine.y2 * step;
+
+        solutionSVG = `
+          <line x1="${sx1}" y1="${sy1}" x2="${sx2}" y2="${sy2}" stroke="#16a34a" stroke-width="5" stroke-linecap="round" />
+          <circle cx="${sx1}" cy="${sy1}" r="6" fill="#16a34a" />
+          <circle cx="${sx2}" cy="${sy2}" r="6" fill="#16a34a" />
+        `;
+      }
+
+      // 網格節點 (觸控區塊)
+      let nodesSVG = '';
+      for (let r = 0; r <= 5; r++) {
+        for (let c = 0; c <= 8; c++) {
+          const cx = startX + c * step;
+          const cy = startY + r * step;
+          const isSelected = userNodes.some(n => n.gx === c && n.gy === r);
+
+          const dotColor = isSelected ? '#2563eb' : '#94a3b8';
+          const dotRadius = isSelected ? 7 : 4;
+
+          nodesSVG += `
+            <g onclick="toggleGridNode(${c}, ${r})">
+              <circle cx="${cx}" cy="${cy}" r="22" class="grid-node-hitarea" />
+              <circle cx="${cx}" cy="${cy}" r="${dotRadius}" fill="${dotColor}" class="grid-node-dot" />
+              ${isSelected ? `<circle cx="${cx}" cy="${cy}" r="11" fill="none" stroke="#2563eb" stroke-width="2.5" />` : ''}
+            </g>
+          `;
+        }
+      }
+
+      return `
+        <svg viewBox="0 0 500 320" class="grid-svg">
+          ${gridLines}
+          ${baseLineSVG}
+          ${solutionSVG}
+          ${userLineSVG}
+          ${nodesSVG}
+        </svg>
+      `;
+    }
+
+    /* -------------------------------------------------------------
+       點選與互動邏輯
+    ------------------------------------------------------------- */
+    function toggleLineSelection(idx) {
+      if (document.getElementById('btn-submit').classList.contains('hidden')) return;
+
+      const pos = selectedLineIndices.indexOf(idx);
+      if (pos > -1) {
+        selectedLineIndices.splice(pos, 1);
+      } else {
+        selectedLineIndices.push(idx);
+      }
+
+      const q = questions[currentQIndex];
+      const canvasContainer = document.querySelector('.canvas-container');
+      if (canvasContainer) {
+        canvasContainer.innerHTML = renderLinesSVG(q.lines, false);
+      }
+    }
+
+    function toggleGridNode(gx, gy) {
+      if (document.getElementById('btn-submit').classList.contains('hidden')) return;
+
+      const idx = selectedGridNodes.findIndex(n => n.gx === gx && n.gy === gy);
+      if (idx > -1) {
+        selectedGridNodes.splice(idx, 1);
+      } else {
+        if (selectedGridNodes.length < 2) {
+          selectedGridNodes.push({ gx, gy });
+        } else {
+          selectedGridNodes = [{ gx, gy }]; // 超過2個點時重選
+        }
+      }
+
+      const q = questions[currentQIndex];
+      const canvasContainer = document.querySelector('.canvas-container');
+      if (canvasContainer) {
+        canvasContainer.innerHTML = renderGridSVG(q.baseLine, selectedGridNodes, false);
+      }
+    }
+
+    function resetCurrentSelection() {
+      selectedGridNodes = [];
+      selectedLineIndices = [];
+      const q = questions[currentQIndex];
+      const canvasContainer = document.querySelector('.canvas-container');
+      if (canvasContainer) {
+        if (q.type === 'select_lines') {
+          canvasContainer.innerHTML = renderLinesSVG(q.lines, false);
+        } else {
+          canvasContainer.innerHTML = renderGridSVG(q.baseLine, [], false);
+        }
+      }
+    }
+
+    /* -------------------------------------------------------------
+       答案對錯檢查與反饋
+    ------------------------------------------------------------- */
+    function checkAnswer() {
+      const q = questions[currentQIndex];
+      const t = i18n[currentLang];
+      const feedback = document.getElementById('feedback-area');
+
+      let isCorrect = false;
+      let userAnsDisplay = "";
+      let wrongLines = [];
+
+      if (q.type === 'select_lines') {
+        if (selectedLineIndices.length === 0) {
+          alert(currentLang === 'zh' ? "請點選畫面上的虛線作答！" : "Please tap lines on the screen to answer!");
+          return;
+        }
+
+        const selectedCount = selectedLineIndices.length;
+        userAnsDisplay = currentLang === 'zh' ? `點選了 ${selectedCount} 條直線` : `Selected ${selectedCount} line(s)`;
+
+        // 判斷選取的直線是否為正確的平行線組
+        const correctParallelIndices = q.lines.map((l, i) => l.isParallel ? i : -1).filter(i => i !== -1);
+        const wrongSelected = selectedLineIndices.filter(i => !q.lines[i].isParallel);
+        wrongLines = wrongSelected;
+
+        isCorrect = (
+          selectedLineIndices.length === correctParallelIndices.length &&
+          wrongSelected.length === 0 &&
+          correctParallelIndices.every(i => selectedLineIndices.includes(i))
+        );
+      } else { // 方格紙題型
+        if (selectedGridNodes.length < 2) {
+          alert(currentLang === 'zh' ? "請在方格紙上點選 2 個點以連成直線！" : "Please select 2 points on grid paper to draw a line!");
+          return;
+        }
+
+        const p1 = selectedGridNodes[0];
+        const p2 = selectedGridNodes[1];
+        userAnsDisplay = `(${p1.gx},${p1.gy}) ➔ (${p2.gx},${p2.gy})`;
+
+        const b = q.baseLine;
+        const dux = p2.gx - p1.gx;
+        const duy = p2.gy - p1.gy;
+        const dbx = b.x2 - b.x1;
+        const dby = b.y2 - b.y1;
+
+        // 1. 檢查是否平行：斜率相等 (dux * dby === duy * dbx)
+        const isParallelSlope = (dux * dby === duy * dbx);
+
+        // 2. 檢查是否重疊在黑線上 (三點共線)
+        const isCollinearWithBase = ( (p1.gx - b.x1) * dby === (p1.gy - b.y1) * dbx );
+
+        // 只要斜率相等且不在同一條直線上重疊即可，不限制長度
+        isCorrect = isParallelSlope && !isCollinearWithBase;
+      }
+
+      // 紀錄答題歷程
+      if (!records[currentQIndex]) {
+        let targetAnsText = "";
+        if (q.type === 'select_lines') {
+          targetAnsText = currentLang === 'zh' ? `選取 ${q.targetCount} 條平行線` : `Select ${q.targetCount} parallel lines`;
+        } else {
+          targetAnsText = currentLang === 'zh' ? "與黑線平行的直線" : "Line parallel to black line";
+        }
+
+        records[currentQIndex] = {
+          qIndex: currentQIndex + 1,
+          questionObj: q,
+          targetAns: targetAnsText,
+          userFirstWrong: null,
+          isCorrectOnFirstTry: false,
+          solved: false
+        };
+      }
+
+      if (isCorrect) {
+        if (wrongAttempts === 0) {
+          records[currentQIndex].isCorrectOnFirstTry = true;
+        }
+        records[currentQIndex].solved = true;
+
+        const randomPraise = t.praise[Math.floor(Math.random() * t.praise.length)];
+        feedback.className = "feedback-box feedback-success";
+        feedback.innerHTML = `<strong>${randomPraise}</strong>`;
+        feedback.classList.remove('hidden');
+
+        document.getElementById('btn-submit').classList.add('hidden');
+        document.getElementById('btn-next').classList.remove('hidden');
+        document.getElementById('btn-next').focus();
+      } else {
+        wrongAttempts++;
+        if (records[currentQIndex].userFirstWrong === null) {
+          records[currentQIndex].userFirstWrong = userAnsDisplay;
+        }
+
+        triggerShakeAnimation();
+
+        if (wrongAttempts === 1) {
+          // 第一次答錯：給予極具引導性的步驟提示
+          let hintText = "";
+          if (q.type === 'select_lines') {
+            hintText = currentLang === 'zh' ? `
+              <div><strong>${t.encourage[Math.floor(Math.random() * t.encourage.length)]}</strong></div>
+              <div style="margin-top:8px;">
+                💡 <strong>觀念與觀察引導：</strong><br>
+                1. 平行線之間的距離處處相等，兩端無限延長後<strong>永遠不會相交</strong>。<br>
+                2. 請觀察直線的傾斜角度，找出方向完全一致的 ${q.targetCount} 條虛線！
+              </div>
+            ` : `
+              <div><strong>${t.encourage[Math.floor(Math.random() * t.encourage.length)]}</strong></div>
+              <div style="margin-top:8px;">
+                💡 <strong>Guided Thinking:</strong><br>
+                1. Parallel lines remain equidistant and <strong>never intersect</strong>.<br>
+                2. Observe line angles and select the ${q.targetCount} lines pointing in the exact same direction!
+              </div>
+            `;
+          } else {
+            // 方格紙題型具體引導提示
+            const b = q.baseLine;
+            const dx = Math.abs(b.x2 - b.x1);
+            const dy = Math.abs(b.y2 - b.y1);
+
+            let stepGuide = "";
+            if (q.orientation === 'vertical') {
+              stepGuide = currentLang === 'zh' 
+                ? `請找另一條直格線，點選<strong>上下相隔 ${dy} 格</strong>（直向數 ${dy} 格）的 2 個點。`
+                : `Choose another vertical grid line and pick 2 points spaced <strong>${dy} grid units vertically</strong>.`;
+            } else if (q.orientation === 'horizontal') {
+              stepGuide = currentLang === 'zh'
+                ? `請找另一條橫格線，點選<strong>左右相隔 ${dx} 格</strong>（橫向數 ${dx} 格）的 2 個點。`
+                : `Choose another horizontal grid line and pick 2 points spaced <strong>${dx} grid units horizontally</strong>.`;
+            } else {
+              stepGuide = currentLang === 'zh'
+                ? `觀察黑線是「橫向走 ${dx} 格、直向走 ${dy} 格」，在別處選一個點為起點，同樣橫向走 ${dx} 格、直向走 ${dy} 格點選第二個點。`
+                : `Observe the black line (moves ${dx} grids horizontally and ${dy} vertically). Pick a start node and move by the exact same grid count for the 2nd point.`;
+            }
+
+            hintText = currentLang === 'zh' ? `
+              <div><strong>${t.encourage[Math.floor(Math.random() * t.encourage.length)]}</strong></div>
+              <div style="margin-top:8px;">
+                💡 <strong>解題步驟提示：</strong><br>
+                ${stepGuide}<br>
+                （注意：連線不可與原黑線在同一條線上重疊喔！）
+              </div>
+            ` : `
+              <div><strong>${t.encourage[Math.floor(Math.random() * t.encourage.length)]}</strong></div>
+              <div style="margin-top:8px;">
+                💡 <strong>Step-by-Step Hint:</strong><br>
+                ${stepGuide}
+              </div>
+            `;
+          }
+
+          feedback.className = "feedback-box feedback-warning";
+          feedback.innerHTML = hintText;
+          feedback.classList.remove('hidden');
+        } else {
+          // 第二次答錯：在圖上以綠線顯示正確答案，紅線延伸顯示相交點 (✕)
+          const canvasContainer = document.querySelector('.canvas-container');
+
+          if (q.type === 'select_lines') {
+            canvasContainer.innerHTML = renderLinesSVG(q.lines, true, wrongLines);
+            feedback.className = "feedback-box feedback-danger";
+            feedback.innerHTML = `<div><strong>${t.stepTitle}</strong></div><div style="margin-top:6px;">${t.lineSolutionText}</div>`;
+          } else {
+            // 計算嚴格保證留在方格紙 (8x5) 內的正解平行線段
+            const solLine = getValidGridSolutionLine(q.baseLine);
+
+            canvasContainer.innerHTML = renderGridSVG(q.baseLine, selectedGridNodes, true, solLine);
+            feedback.className = "feedback-box feedback-danger";
+            feedback.innerHTML = `<div><strong>${t.stepTitle}</strong></div><div style="margin-top:6px;">${t.gridSolutionText}</div>`;
+          }
+
+          feedback.classList.remove('hidden');
+          document.getElementById('btn-submit').classList.add('hidden');
+          document.getElementById('btn-next').classList.remove('hidden');
+          document.getElementById('btn-next').focus();
+        }
+      }
+    }
+
+    function triggerShakeAnimation() {
+      const card = document.querySelector('.quiz-card');
+      if (card) {
+        card.classList.remove('shake-animation');
+        void card.offsetWidth;
+        card.classList.add('shake-animation');
+        card.addEventListener('animationend', function() {
+          card.classList.remove('shake-animation');
+        }, { once: true });
+      }
+    }
+
+    function toggleLanguage() {
+      currentLang = currentLang === 'zh' ? 'en' : 'zh';
+      const t = i18n[currentLang];
+      
+      document.getElementById('header-title').innerText = t.headerTitle;
+      document.getElementById('lang-toggle-btn').innerText = t.langBtn;
+      document.getElementById('home-subtitle').innerText = t.homeSubtitle;
+      document.getElementById('title-unit1').innerText = t.titleUnit1;
+      document.getElementById('title-unit2').innerText = t.titleUnit2;
+      document.getElementById('desc-opt1').innerText = t.descOpt1;
+      document.getElementById('desc-opt2').innerText = t.descOpt2;
+      document.getElementById('tag-unit1-status').innerText = t.tagUnit1Status;
+      document.getElementById('lbl-back-btn').innerText = t.backBtn;
+
+      if (!document.getElementById('page-quiz').classList.contains('hidden')) {
+        loadQuestion();
+      }
+    }
+
+    function formatDate(date) {
+      const hours = String(date.getHours()).padStart(2, '0');
+      const mins = String(date.getMinutes()).padStart(2, '0');
+      const secs = String(date.getSeconds()).padStart(2, '0');
+      return `${hours}:${mins}:${secs}`;
+    }
+
+    function formatDuration(start, end) {
+      const diffSecs = Math.floor((end - start) / 1000);
+      const mins = Math.floor(diffSecs / 60);
+      const secs = diffSecs % 60;
+      if (currentLang === 'zh') {
+        return `${mins} 分 ${secs} 秒`;
+      }
+      return `${mins}m ${secs}s`;
+    }
+
+    function getQuestionSummaryText(q) {
+      if (q.type === 'select_lines') {
+        return currentLang === 'zh' 
+          ? `沿虛線選取 ${q.targetCount} 條平行線` 
+          : `Select ${q.targetCount} parallel lines along dashed lines`;
+      } else {
+        const b = q.baseLine;
+        return currentLang === 'zh'
+          ? `在 8x5 方格紙劃出平行線（黑線基準: ${b.x1},${b.y1} 至 ${b.x2},${b.y2}）`
+          : `Draw parallel line on 8x5 grid (Base: ${b.x1},${b.y1} to ${b.x2},${b.y2})`;
+      }
+    }
+
+    function nextQuestion() {
+      currentQIndex++;
+      if (currentQIndex < questions.length) {
+        loadQuestion();
+      } else {
+        showReport();
+      }
+    }
+
+    function showReport() {
+      const endTimeObj = new Date();
+      const t = i18n[currentLang];
+
+      document.getElementById('page-quiz').classList.add('hidden');
+      document.getElementById('page-report').classList.remove('hidden');
+
+      document.getElementById('report-main-title').innerText = t.reportTitle;
+      document.getElementById('lbl-start-time').innerText = t.startTime;
+      document.getElementById('lbl-end-time').innerText = t.endTime;
+      document.getElementById('lbl-duration').innerText = t.durationTime;
+      document.getElementById('lbl-total-correct').innerText = t.totalCorrect;
+      document.getElementById('lbl-accuracy').innerText = t.accuracy;
+      document.getElementById('lbl-mastery-title').innerText = t.masteryTitle;
+      document.getElementById('lbl-correct-title').innerText = t.correctTitle;
+      document.getElementById('lbl-wrong-title').innerText = t.wrongTitle;
+
+      document.getElementById('lbl-btn-download').innerText = t.btnDownload;
+      document.getElementById('lbl-btn-retry').innerText = t.btnRetry;
+      document.getElementById('lbl-btn-home').innerText = t.btnHome;
+
+      document.getElementById('val-start-time').innerText = formatDate(startTimeObj);
+      document.getElementById('val-end-time').innerText = formatDate(endTimeObj);
+      document.getElementById('val-duration').innerText = formatDuration(startTimeObj, endTimeObj);
+
+      let correctCount = 0;
+      records.forEach(r => {
+        if (r && r.isCorrectOnFirstTry) correctCount++;
+      });
+
+      const total = questions.length;
+      const accuracyPct = Math.round((correctCount / total) * 100);
+
+      document.getElementById('report-unit-name').innerText = t.unit2;
+      document.getElementById('val-unit-mastery').innerText = `${correctCount} / ${total} (${accuracyPct}%)`;
+
+      const correctContainer = document.getElementById('correct-list-container');
+      correctContainer.innerHTML = '';
+      const correctItems = records.filter(r => r && r.isCorrectOnFirstTry);
+
+      if (correctItems.length === 0) {
+        correctContainer.innerHTML = `<div style="font-size:0.95rem; color:#718096; padding-left:5px;">${t.noCorrect}</div>`;
+      } else {
+        correctItems.forEach(item => {
+          const qText = t.questionLabel.replace('{n}', item.qIndex);
+          const qExprText = getQuestionSummaryText(item.questionObj);
+          const itemDiv = document.createElement('div');
+          itemDiv.className = 'item-card-correct';
+          itemDiv.innerHTML = `
+            <div class="item-q-title" style="font-weight:bold;">${qText} : ${qExprText}</div>
+            <div class="item-ans-text">${t.ansLabel} : ${item.targetAns}</div>
+          `;
+          correctContainer.appendChild(itemDiv);
+        });
+      }
+
+      const wrongContainer = document.getElementById('wrong-list-container');
+      wrongContainer.innerHTML = '';
+      const wrongItems = records.filter(r => !r || !r.isCorrectOnFirstTry);
+
+      if (wrongItems.length === 0) {
+        wrongContainer.innerHTML = `<div style="font-size:0.95rem; color:#38a169; padding-left:5px;">${t.noWrong}</div>`;
+      } else {
+        wrongItems.forEach((item) => {
+          if (!item) return;
+          const qText = t.questionLabel.replace('{n}', item.qIndex);
+          const qExprText = getQuestionSummaryText(item.questionObj);
+          const userAnsDisplay = item.userFirstWrong !== null ? item.userFirstWrong : '-';
+          const itemDiv = document.createElement('div');
+          itemDiv.className = 'item-card-wrong';
+          itemDiv.innerHTML = `
+            <div class="item-q-title" style="font-weight:bold;">${qText} : ${qExprText}</div>
+            <div class="item-ans-text">${t.yourAnsLabel} : ${userAnsDisplay} | ${t.correctAnsLabel} : ${item.targetAns}</div>
+          `;
+          wrongContainer.appendChild(itemDiv);
+        });
+      }
+    }
+
+    function retryPractice() {
+      startQuiz(currentMode);
+    }
+
+    function goHome() {
+      document.getElementById('page-report').classList.add('hidden');
+      document.getElementById('page-quiz').classList.add('hidden');
+      document.getElementById('page-home').classList.remove('hidden');
+      document.getElementById('lang-toggle-btn').classList.remove('hidden');
+    }
+
+    function askReturnHome() {
+      const t = i18n[currentLang];
+      showCustomModal(t.modalReturnTitle, t.modalReturnMsg, () => {
+        goHome();
+      });
+    }
+
+    function showCustomModal(title, msg, onConfirm) {
+      document.getElementById('modal-title').innerText = title;
+      document.getElementById('modal-msg').innerText = msg;
+      modalActionCallback = onConfirm;
+
+      const cancelBtn = document.getElementById('modal-cancel-btn');
+      if (onConfirm) {
+        cancelBtn.classList.remove('hidden');
+      } else {
+        cancelBtn.classList.add('hidden');
+      }
+
+      document.getElementById('custom-modal').classList.add('active');
+    }
+
+    function closeModal() {
+      document.getElementById('custom-modal').classList.remove('active');
+      modalActionCallback = null;
+    }
+
+    function confirmModalAction() {
+      if (modalActionCallback) {
+        modalActionCallback();
+      }
+      closeModal();
+    }
+
+    function downloadReportImage() {
+      const reportElement = document.getElementById('report-card-to-capture');
+      if (typeof html2canvas !== 'undefined') {
+        html2canvas(reportElement, { scale: 2 }).then(canvas => {
+          const link = document.createElement('a');
+          link.download = `ParallelLines_Report_${Date.now()}.png`;
+          link.href = canvas.toDataURL('image/png');
+          link.click();
+        });
+      }
+    }
+  </script>
+  <!-- iPad 優化修正腳本 -->
+  <script src="https://mathteacher1618.github.io/my_fixes/ipad_fix.js"></script>
+</body>
+</html>
