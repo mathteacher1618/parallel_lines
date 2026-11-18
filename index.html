@@ -281,6 +281,53 @@
       pointer-events: none;
     }
 
+    /* 選項按鈕 (單元一使用) */
+    .options-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      justify-content: center;
+      width: 100%;
+      margin-bottom: 15px;
+    }
+
+    .opt-btn {
+      padding: 12px 24px;
+      border: 2px solid #cbd5e0;
+      background: white;
+      border-radius: 10px;
+      font-size: 1.1rem;
+      color: #4a5568;
+      cursor: pointer;
+      transition: all 0.2s;
+      min-width: 100px;
+      text-align: center;
+    }
+
+    .opt-btn:hover {
+      background-color: #f7fafc;
+    }
+
+    .opt-btn.selected {
+      border-color: #3182ce;
+      background: #ebf8ff;
+      color: #2b6cb0;
+      font-weight: bold;
+      transform: scale(1.02);
+    }
+    
+    .opt-btn.wrong-selected {
+      border-color: #ef4444;
+      background: #fef2f2;
+      color: #b91c1c;
+      animation: shake 0.4s ease-in-out;
+    }
+
+    .opt-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
     /* 按鈕樣式 */
     .btn-group {
       display: flex;
@@ -512,9 +559,9 @@
       <div id="page-home">
         <h2 id="home-subtitle" class="page-title">請選擇學習單元</h2>
         <div class="menu-grid">
-          <div class="card disabled-card" onclick="clickUnit1()">
-            <h3><span id="title-unit1">單元一：分辨平行線</span> <span class="tag-disabled" id="tag-unit1-status">(暫未開放)</span></h3>
-            <p id="desc-opt1">練習在不同圖形及線段中，辨識並點選出互相平行的直線組。（目前維護中）</p>
+          <div class="card" onclick="startQuiz('unit1')">
+            <h3><span id="title-unit1">單元一：分辨平行線</span></h3>
+            <p id="desc-opt1">練習在不同圖形及線段中，辨識並點選出互相平行的直線組。</p>
           </div>
           <div class="card" onclick="startQuiz('unit2')">
             <h3 id="title-unit2">單元二：繪畫平行線</h3>
@@ -642,9 +689,8 @@
         homeSubtitle: "請選擇學習單元",
         titleUnit1: "單元一：分辨平行線",
         titleUnit2: "單元二：繪畫平行線",
-        descOpt1: "練習在不同圖形及線段中，辨識並點選出互相平行的直線組。（目前維護中）",
+        descOpt1: "練習在不同圖形及線段中，辨識並點選出互相平行的直線組。",
         descOpt2: "練習在虛線圖及 8x5 方格紙上，點選線段或點連成與原黑線平行的直線。",
-        tagUnit1Status: "(暫未開放)",
         unit1: "單元一：分辨平行線",
         unit2: "單元二：繪畫平行線",
         tierEasy: "初階",
@@ -660,7 +706,7 @@
         nextBtn: "再答一題 ➔",
         resetBtn: "重選連線 / 點",
         praise: ["太棒了！答對了！🌟", "非常優秀，完全正確！👏", "答對了！繼續保持！🎉", "真聰明！完全掌握了平行線的特性！💪"],
-        encourage: ["再試一次！仔細觀察直線的方向與傾斜角度！", "沒關係，重新觀察一下線段延長後是否會相交！", "加油！重新點選試試看！"],
+        encourage: ["再試一次！仔細觀察直線的方向與傾斜角度！", "沒關係，重新觀察一下線段延長後是否會相交！", "加油！重新思考試試看！"],
         noWrong: "太厲害了！沒有答錯的題目！",
         noCorrect: "無答對題目",
         reportTitle: "練習完成！表現分析報告",
@@ -677,14 +723,24 @@
         btnHome: "回到主頁重新選擇",
         modalReturnTitle: "返回單元選擇",
         modalReturnMsg: "確定要返回主選單嗎？目前的答題進度將不會被保存。",
-        unit1UnavailableTitle: "單元一暫未開放",
-        unit1UnavailableMsg: "單元一「分辨平行線」目前暫未開放，請選擇「單元二：繪畫平行線」進行練習！",
         stepTitle: "完整解題思路：",
+        
+        // Unit 1 Prompts
+        u1_easy_prompt: "請問這兩條線是否為平行線？",
+        u1_medium_prompt: "請問這個多邊形有多少組平行線？",
+        u1_hard_prompt: "請問這個大寫英文字母中是否有平行線？",
+        optYesParallel: "是平行線",
+        optNoParallel: "不是平行線",
+        optYesHas: "有平行線",
+        optNoHas: "沒有平行線",
+        optGroup: "組",
+        intersectPoint: "相交點",
+        
+        // Unit 2 Prompts
         u2_line_prompt: "請沿著虛線畫出一組平行線（點選後會變為實線）：",
         u2_grid_prompt: "請點選方格紙上的 2 個點，連成一條與黑線互相平行的直線（不可與黑線重疊）：",
         gridSolutionText: "解題說明：方格紙上以<strong style='color:#16a34a;'>綠色標示平行線參考答案</strong>（與黑線互相平行）。<br><span style='color:#dc2626;'>紅色虛線延伸顯示您選取的直線與黑線在相交點（✕）相交，因此並不平行。</span>",
-        lineSolutionText: "解題說明：<strong style='color:#16a34a;'>綠色高亮與延伸線為互相平行的直線組</strong>。<br><span style='color:#dc2626;'>紅色延伸虛線顯示您點選的錯誤直線在延長後與綠色平行線在相交點（✕）相交。</span>",
-        selectedPointsMsg: "已點選 {n} 個點。需要點選 2 個點來連成直線。"
+        lineSolutionText: "解題說明：<strong style='color:#16a34a;'>綠色高亮與延伸線為互相平行的直線組</strong>。<br><span style='color:#dc2626;'>紅色延伸虛線顯示您點選的錯誤直線在延長後與綠色平行線在相交點（✕）相交。</span>"
       },
       en: {
         headerTitle: "Parallel Lines",
@@ -692,9 +748,8 @@
         homeSubtitle: "Please Select a Learning Unit",
         titleUnit1: "Unit 1: Identify Parallel Lines",
         titleUnit2: "Unit 2: Draw Parallel Lines",
-        descOpt1: "Practice identifying parallel line sets from different figures. (Under maintenance)",
+        descOpt1: "Practice identifying parallel line sets from different figures and lines.",
         descOpt2: "Practice selecting line segments or grid nodes to draw parallel lines.",
-        tagUnit1Status: "(Not Available)",
         unit1: "Unit 1: Identify Parallel Lines",
         unit2: "Unit 2: Draw Parallel Lines",
         tierEasy: "Easy",
@@ -705,7 +760,7 @@
         ansLabel: "Ans",
         yourAnsLabel: "Your Answer",
         correctAnsLabel: "Correct Answer",
-        backBtn: "← Back to Stage Selection",
+        backBtn: "← Back to Selection",
         submitBtn: "Submit Answer",
         nextBtn: "Next Question ➔",
         resetBtn: "Reset Selection",
@@ -727,19 +782,29 @@
         btnHome: "Back to Home",
         modalReturnTitle: "Return to Stage Selection",
         modalReturnMsg: "Are you sure you want to return to home? Current progress will be lost.",
-        unit1UnavailableTitle: "Unit 1 Coming Soon",
-        unit1UnavailableMsg: "Unit 1 is currently unavailable. Please select Unit 2 to practice!",
         stepTitle: "Solution Breakdown:",
+        
+        // Unit 1 Prompts
+        u1_easy_prompt: "Are these two lines parallel?",
+        u1_medium_prompt: "How many pairs of parallel lines does this polygon have?",
+        u1_hard_prompt: "Does this capital letter contain any parallel lines?",
+        optYesParallel: "Yes, parallel",
+        optNoParallel: "No, not parallel",
+        optYesHas: "Yes, it has",
+        optNoHas: "No, it doesn't",
+        optGroup: " pair(s)",
+        intersectPoint: "Intersect",
+        
+        // Unit 2 Prompts
         u2_line_prompt: "Please draw a group of parallel lines along the dashed lines (turns solid when tapped):",
         u2_grid_prompt: "Tap 2 points on the grid paper to draw a line parallel to the black line (cannot overlap):",
         gridSolutionText: "Solution Breakdown: The <strong style='color:#16a34a;'>GREEN line shows a sample parallel line</strong> (parallel to black line).<br><span style='color:#dc2626;'>Red dashed extensions show where your line intersects (✕) the original black line.</span>",
-        lineSolutionText: "Solution Breakdown: <strong style='color:#16a34a;'>GREEN lines and extensions form the parallel set</strong>.<br><span style='color:#dc2626;'>Red dashed lines extend your incorrect choice to show the intersection point (✕).</span>",
-        selectedPointsMsg: "Selected {n} point(s). Please select 2 points to form a line."
+        lineSolutionText: "Solution Breakdown: <strong style='color:#16a34a;'>GREEN lines and extensions form the parallel set</strong>.<br><span style='color:#dc2626;'>Red dashed lines extend your incorrect choice to show the intersection point (✕).</span>"
       }
     };
 
     let currentLang = 'zh';
-    let currentMode = 'unit2';
+    let currentMode = 'unit1';
     let questions = [];
     let currentQIndex = 0;
     let wrongAttempts = 0;
@@ -747,21 +812,20 @@
     let startTimeObj = null;
     let modalActionCallback = null;
 
-    // 作答狀態（直線點選或網格點選）
+    // 作答狀態
     let selectedLineIndices = [];
     let selectedGridNodes = [];
+    let currentSelectedOptionValue = null;
 
     // 隨機整數輔助
     function getRandomInt(min, max) {
       return Math.floor(Math.random() * (max - min + 1)) + min;
     }
 
-    // 從陣列隨機選一個元素
     function getRandomChoice(arr) {
       return arr[Math.floor(Math.random() * arr.length)];
     }
 
-    // 洗牌函式
     function shuffleArray(arr) {
       const array = [...arr];
       for (let i = array.length - 1; i > 0; i--) {
@@ -772,23 +836,81 @@
     }
 
     /* -------------------------------------------------------------
-       單元一點選提示：暫未開放
+       單元一題目動態產生 (10 題：初階4題 -> 中階3題 -> 高階3題，每次隨機不重覆)
     ------------------------------------------------------------- */
-    function clickUnit1() {
-      const t = i18n[currentLang];
-      showCustomModal(t.unit1UnavailableTitle, t.unit1UnavailableMsg, null);
+    function generateUnit1Questions() {
+      const qList = [];
+
+      // 初階：4題 (從5種題型中選取)
+      const easyTypes = [
+        { subtype: 'curves', answer: false }, // 處處距離相等的一對曲線
+        { subtype: 'parallel_diff_length', answer: true }, // 長短不同但平行的一對直線
+        { subtype: 'parallel_far_apart', answer: true }, // 位置明顯分開的平行線
+        { subtype: 'perpendicular', answer: false }, // 垂直線
+        { subtype: 'intersecting_not_perp', answer: false }, // 不平行且有顯示相交點的一對直線 (不是垂直線)
+        { subtype: 'non_parallel_no_intersect', answer: false }, // 不平行但沒有顯示相交點的一對直線
+        { subtype: 'non_parallel_intersect', answer: false } // 不平行且有顯示相交點的一對直線
+      ];
+      const selectedEasy = shuffleArray(easyTypes).slice(0, 4);
+      selectedEasy.forEach(t => {
+        qList.push({ unit: 1, tier: 'easy', type: 'tf_lines', subtype: t.subtype, answer: t.answer, titleKey: 'u1_easy_prompt' });
+      });
+
+      // 中階：3題 (提供簡易的多邊形，問有多少組平行線 0-3)
+      const mediumPolygons = [
+        { name: 'triangle', pairs: 0, points: "250,50 150,250 350,250", arrows: [] },
+        { name: 'trapezoid', pairs: 1, points: "200,80 300,80 350,220 150,220", 
+          arrows: [{p1:[200,80], p2:[300,80], type:1}, {p1:[150,220], p2:[350,220], type:1}] },
+        { name: 'parallelogram', pairs: 2, points: "200,80 350,80 300,220 150,220",
+          arrows: [{p1:[200,80], p2:[350,80], type:1}, {p1:[150,220], p2:[300,220], type:1},
+                   {p1:[350,80], p2:[300,220], type:2}, {p1:[200,80], p2:[150,220], type:2}] },
+        { name: 'rectangle', pairs: 2, points: "150,80 350,80 350,220 150,220",
+          arrows: [{p1:[150,80], p2:[350,80], type:1}, {p1:[150,220], p2:[350,220], type:1},
+                   {p1:[350,80], p2:[350,220], type:2}, {p1:[150,80], p2:[150,220], type:2}] },
+        { name: 'hexagon', pairs: 3, points: "200,60 300,60 350,150 300,240 200,240 150,150",
+          arrows: [{p1:[200,60], p2:[300,60], type:1}, {p1:[200,240], p2:[300,240], type:1},
+                   {p1:[300,60], p2:[350,150], type:2}, {p1:[150,150], p2:[200,240], type:2},
+                   {p1:[200,60], p2:[150,150], type:3}, {p1:[350,150], p2:[300,240], type:3}] },
+        { name: 'irregular', pairs: 0, points: "180,70 320,100 360,230 140,200", arrows: [] }
+      ];
+      const selectedMedium = shuffleArray(mediumPolygons).slice(0, 3);
+      selectedMedium.forEach(p => {
+        qList.push({ unit: 1, tier: 'medium', type: 'mc_polygon', polygon: p, answer: p.pairs, titleKey: 'u1_medium_prompt' });
+      });
+
+      // 高階：3題 (提供粗體大寫英文字母，問是否有平行線)
+      const letters = [
+        { letter: 'A', answer: false, segs: [[250,80, 200,240], [250,80, 300,240], [220,176, 280,176]] },
+        { letter: 'E', answer: true, segs: [[200,80, 280,80, 1], [200,160, 260,160, 1], [200,240, 280,240, 1], [200,80, 200,240]] },
+        { letter: 'F', answer: true, segs: [[200,80, 280,80, 1], [200,160, 260,160, 1], [200,80, 200,240]] },
+        { letter: 'H', answer: true, segs: [[200,80, 200,240, 1], [280,80, 280,240, 1], [200,160, 280,160]] },
+        { letter: 'K', answer: false, segs: [[200,80, 200,240], [280,80, 200,160], [200,160, 280,240]] },
+        { letter: 'L', answer: false, segs: [[220,80, 220,240], [220,240, 280,240]] },
+        { letter: 'M', answer: true, segs: [[180,80, 180,240, 1], [320,80, 320,240, 1], [180,80, 250,160], [320,80, 250,160]] },
+        { letter: 'N', answer: true, segs: [[190,80, 190,240, 1], [310,80, 310,240, 1], [190,80, 310,240]] },
+        { letter: 'T', answer: false, segs: [[180,80, 320,80], [250,80, 250,240]] },
+        { letter: 'U', answer: true, segs: [[190,80, 190,240, 1], [310,80, 310,240, 1], [190,240, 310,240]] },
+        { letter: 'V', answer: false, segs: [[190,80, 250,240], [310,80, 250,240]] },
+        { letter: 'X', answer: false, segs: [[190,80, 310,240], [310,80, 190,240]] },
+        { letter: 'Y', answer: false, segs: [[190,80, 250,160], [310,80, 250,160], [250,160, 250,240]] },
+        { letter: 'Z', answer: true, segs: [[190,80, 310,80, 1], [190,240, 310,240, 1], [310,80, 190,240]] }
+      ];
+      const selectedHard = shuffleArray(letters).slice(0, 3);
+      selectedHard.forEach(l => {
+        qList.push({ unit: 1, tier: 'hard', type: 'tf_letter', letterObj: l, answer: l.answer, titleKey: 'u1_hard_prompt' });
+      });
+
+      return qList;
     }
 
     /* -------------------------------------------------------------
-       繪製平行線問答的動態隨機生成器 (包含長短變化、位置隔開與動態不重複)
+       單元二題目動態產生
     ------------------------------------------------------------- */
     function generateRandomLineQuestion(tier, targetCount) {
-      // 隨機選一個目標平行線傾角 (度數)
       const candidateAngles = [-65, -50, -35, -20, 0, 15, 30, 45, 60, 75];
       const targetAngleDeg = getRandomChoice(candidateAngles);
       const targetRad = (targetAngleDeg * Math.PI) / 180;
 
-      // 平行線方向向量與法向向量
       const ux = Math.cos(targetRad);
       const uy = Math.sin(targetRad);
       const nx = -uy;
@@ -798,19 +920,17 @@
       const centerY = 160;
 
       const lines = [];
-
-      // 1. 生成 targetCount 條平行線 (加入長度有長有短、位置前後錯位與大幅隔開間距)
       const spacings = [];
       let currentOffset = -(targetCount - 1) * getRandomInt(40, 60);
       for (let i = 0; i < targetCount; i++) {
         spacings.push(currentOffset);
-        currentOffset += getRandomInt(75, 120); // 隔開一點，拉大間距
+        currentOffset += getRandomInt(75, 120); 
       }
 
       for (let i = 0; i < targetCount; i++) {
         const offset = spacings[i];
-        const shift = getRandomInt(-65, 65); // 前後位置交錯
-        const len = getRandomInt(140, 310);   // 長度有長有短 (140px ~ 310px)
+        const shift = getRandomInt(-65, 65); 
+        const len = getRandomInt(140, 310);   
 
         const cx = centerX + offset * nx + shift * ux;
         const cy = centerY + offset * ny + shift * uy;
@@ -826,7 +946,6 @@
         });
       }
 
-      // 2. 生成干擾線 (初階 3 條，中階 4 條；夾角均相差 25° 以上，絕不平行)
       const distractorCount = targetCount === 2 ? 3 : 4;
       const usedAngles = [targetAngleDeg];
 
@@ -868,80 +987,33 @@
       return shuffleArray(lines);
     }
 
-    /* -------------------------------------------------------------
-       單元二題目動態產生 (10 題：初階4題 -> 中階3題 -> 高階3題，每次隨機不重覆)
-    ------------------------------------------------------------- */
     function generateUnit2Questions() {
       const qList = [];
+      qList.push({ unit: 2, tier: 'easy', type: 'select_lines', targetCount: 2, titleKey: 'u2_line_prompt', lines: generateRandomLineQuestion('easy', 2) });
+      qList.push({ unit: 2, tier: 'easy', type: 'select_lines', targetCount: 2, titleKey: 'u2_line_prompt', lines: generateRandomLineQuestion('easy', 2) });
 
-      // --- 初階 Q1 & Q2：5 條虛線，2 條平行線 (長短與位置變化) ---
-      qList.push({
-        unit: 2, tier: 'easy', type: 'select_lines', targetCount: 2, titleKey: 'u2_line_prompt',
-        lines: generateRandomLineQuestion('easy', 2)
-      });
-      qList.push({
-        unit: 2, tier: 'easy', type: 'select_lines', targetCount: 2, titleKey: 'u2_line_prompt',
-        lines: generateRandomLineQuestion('easy', 2)
-      });
-
-      // --- 初階 Q3：8x5 方格紙 - 5格垂直黑線 (隨機位置) ---
       const vx = getRandomInt(1, 6);
-      qList.push({
-        unit: 2, tier: 'easy', type: 'grid_draw', orientation: 'vertical', titleKey: 'u2_grid_prompt',
-        baseLine: { x1: vx, y1: 0, x2: vx, y2: 5 }
-      });
+      qList.push({ unit: 2, tier: 'easy', type: 'grid_draw', orientation: 'vertical', titleKey: 'u2_grid_prompt', baseLine: { x1: vx, y1: 0, x2: vx, y2: 5 } });
 
-      // --- 初階 Q4：8x5 方格紙 - 5格水平黑線 (隨機位置) ---
       const hy = getRandomInt(1, 4);
       const hxStart = getRandomInt(0, 3);
-      qList.push({
-        unit: 2, tier: 'easy', type: 'grid_draw', orientation: 'horizontal', titleKey: 'u2_grid_prompt',
-        baseLine: { x1: hxStart, y1: hy, x2: hxStart + 5, y2: hy }
-      });
+      qList.push({ unit: 2, tier: 'easy', type: 'grid_draw', orientation: 'horizontal', titleKey: 'u2_grid_prompt', baseLine: { x1: hxStart, y1: hy, x2: hxStart + 5, y2: hy } });
 
-      // --- 中階 Q5, Q6, Q7：7 條虛線，3 條平行線 (長短與位置變化) ---
-      qList.push({
-        unit: 2, tier: 'medium', type: 'select_lines', targetCount: 3, titleKey: 'u2_line_prompt',
-        lines: generateRandomLineQuestion('medium', 3)
-      });
-      qList.push({
-        unit: 2, tier: 'medium', type: 'select_lines', targetCount: 3, titleKey: 'u2_line_prompt',
-        lines: generateRandomLineQuestion('medium', 3)
-      });
-      qList.push({
-        unit: 2, tier: 'medium', type: 'select_lines', targetCount: 3, titleKey: 'u2_line_prompt',
-        lines: generateRandomLineQuestion('medium', 3)
-      });
+      qList.push({ unit: 2, tier: 'medium', type: 'select_lines', targetCount: 3, titleKey: 'u2_line_prompt', lines: generateRandomLineQuestion('medium', 3) });
+      qList.push({ unit: 2, tier: 'medium', type: 'select_lines', targetCount: 3, titleKey: 'u2_line_prompt', lines: generateRandomLineQuestion('medium', 3) });
+      qList.push({ unit: 2, tier: 'medium', type: 'select_lines', targetCount: 3, titleKey: 'u2_line_prompt', lines: generateRandomLineQuestion('medium', 3) });
 
-      // --- 高階 Q8, Q9, Q10：8x5 方格紙 - 斜放黑線 (隨機選擇斜率與位置) ---
       const hardOptionsPool = [
-        { x1: 0, y1: 4, x2: 4, y2: 0 },
-        { x1: 1, y1: 5, x2: 5, y2: 1 },
-        { x1: 2, y1: 4, x2: 6, y2: 0 },
-        { x1: 0, y1: 1, x2: 4, y2: 5 },
-        { x1: 1, y1: 1, x2: 5, y2: 4 },
-        { x1: 0, y1: 0, x2: 4, y2: 3 },
-        { x1: 2, y1: 0, x2: 6, y2: 3 },
-        { x1: 3, y1: 1, x2: 7, y2: 4 },
-        { x1: 1, y1: 4, x2: 5, y2: 1 },
-        { x1: 0, y1: 3, x2: 4, y2: 0 },
-        { x1: 2, y1: 5, x2: 6, y2: 2 },
-        { x1: 3, y1: 4, x2: 7, y2: 1 }
+        { x1: 0, y1: 4, x2: 4, y2: 0 }, { x1: 1, y1: 5, x2: 5, y2: 1 }, { x1: 2, y1: 4, x2: 6, y2: 0 },
+        { x1: 0, y1: 1, x2: 4, y2: 5 }, { x1: 1, y1: 1, x2: 5, y2: 4 }, { x1: 0, y1: 0, x2: 4, y2: 3 },
+        { x1: 2, y1: 0, x2: 6, y2: 3 }, { x1: 3, y1: 1, x2: 7, y2: 4 }, { x1: 1, y1: 4, x2: 5, y2: 1 },
+        { x1: 0, y1: 3, x2: 4, y2: 0 }, { x1: 2, y1: 5, x2: 6, y2: 2 }, { x1: 3, y1: 4, x2: 7, y2: 1 }
       ];
       const selectedHardBases = shuffleArray(hardOptionsPool).slice(0, 3);
 
-      qList.push({
-        unit: 2, tier: 'hard', type: 'grid_draw', orientation: 'slanted', titleKey: 'u2_grid_prompt',
-        baseLine: selectedHardBases[0]
-      });
-      qList.push({
-        unit: 2, tier: 'hard', type: 'grid_draw', orientation: 'slanted', titleKey: 'u2_grid_prompt',
-        baseLine: selectedHardBases[1]
-      });
-      qList.push({
-        unit: 2, tier: 'hard', type: 'grid_draw', orientation: 'slanted', titleKey: 'u2_grid_prompt',
-        baseLine: selectedHardBases[2]
-      });
+      qList.push({ unit: 2, tier: 'hard', type: 'grid_draw', orientation: 'slanted', titleKey: 'u2_grid_prompt', baseLine: selectedHardBases[0] });
+      qList.push({ unit: 2, tier: 'hard', type: 'grid_draw', orientation: 'slanted', titleKey: 'u2_grid_prompt', baseLine: selectedHardBases[1] });
+      qList.push({ unit: 2, tier: 'hard', type: 'grid_draw', orientation: 'slanted', titleKey: 'u2_grid_prompt', baseLine: selectedHardBases[2] });
 
       return qList;
     }
@@ -949,12 +1021,13 @@
     // 啟動測驗
     function startQuiz(mode) {
       currentMode = mode;
+      
       if (mode === 'unit1') {
-        clickUnit1();
-        return;
+        questions = generateUnit1Questions();
+      } else {
+        questions = generateUnit2Questions();
       }
-
-      questions = generateUnit2Questions();
+      
       currentQIndex = 0;
       records = [];
       startTimeObj = new Date();
@@ -966,10 +1039,134 @@
       loadQuestion();
     }
 
+    // 箭頭標記工具函式
+    function renderArrows(x1, y1, x2, y2, count, color="#16a34a") {
+      const dx = x2 - x1;
+      const dy = y2 - y1;
+      const theta = Math.atan2(dy, dx);
+      const midX = x1 + dx / 2;
+      const midY = y1 + dy / 2;
+      
+      const arrowLen = 18;
+      const angle = Math.PI / 6;
+      
+      let svg = '';
+      const offsets = count === 1 ? [0] : count === 2 ? [-12, 12] : [-20, 0, 20];
+      
+      offsets.forEach(offset => {
+          const cx = midX + Math.cos(theta) * offset;
+          const cy = midY + Math.sin(theta) * offset;
+          
+          const lx = cx - arrowLen * Math.cos(theta - angle);
+          const ly = cy - arrowLen * Math.sin(theta - angle);
+          const rx = cx - arrowLen * Math.cos(theta + angle);
+          const ry = cy - arrowLen * Math.sin(theta + angle);
+          
+          svg += `<polyline points="${lx},${ly} ${cx},${cy} ${rx},${ry}" fill="none" stroke="${color}" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>`;
+      });
+      return svg;
+    }
+
+    // Unit 1 Renderers
+    function renderUnit1EasySVG(subtype, showSolution = false) {
+      let content = '';
+      const intersectText = i18n[currentLang].intersectPoint;
+      
+      if (subtype === 'curves') {
+        content = `<path d="M 80 150 Q 250 50 420 150" fill="none" stroke="#9333ea" stroke-width="4" stroke-linecap="round"/>
+                   <path d="M 80 200 Q 250 100 420 200" fill="none" stroke="#9333ea" stroke-width="4" stroke-linecap="round"/>`;
+      } else if (subtype === 'parallel_diff_length') {
+        content = `<line x1="80" y1="120" x2="420" y2="120" stroke="#0ea5e9" stroke-width="4" stroke-linecap="round"/>
+                   <line x1="150" y1="180" x2="350" y2="180" stroke="#0ea5e9" stroke-width="4" stroke-linecap="round"/>`;
+      } else if (subtype === 'parallel_far_apart') {
+        content = `<line x1="80" y1="60" x2="280" y2="120" stroke="#0ea5e9" stroke-width="4" stroke-linecap="round"/>
+                   <line x1="220" y1="200" x2="420" y2="260" stroke="#0ea5e9" stroke-width="4" stroke-linecap="round"/>`;
+      } else if (subtype === 'perpendicular') {
+        content = `<line x1="250" y1="40" x2="250" y2="260" stroke="#f97316" stroke-width="4" stroke-linecap="round"/>
+                   <line x1="120" y1="200" x2="380" y2="200" stroke="#f97316" stroke-width="4" stroke-linecap="round"/>`;
+        if (showSolution) {
+          content += `<circle cx="250" cy="200" r="12" fill="none" stroke="#ef4444" stroke-width="3"/>
+                      <path d="M 250 180 L 270 180 L 270 200" fill="none" stroke="#ef4444" stroke-width="3"/>
+                      <text x="275" y="170" font-size="14" font-weight="bold" fill="#ef4444" text-anchor="middle">${intersectText}</text>`;
+        }
+      } else if (subtype === 'intersecting_not_perp') {
+        content = `<line x1="120" y1="80" x2="380" y2="180" stroke="#ef4444" stroke-width="4" stroke-linecap="round"/>
+                   <line x1="200" y1="50" x2="300" y2="250" stroke="#ef4444" stroke-width="4" stroke-linecap="round"/>`;
+        if (showSolution) {
+          content += `<circle cx="237.6" cy="125.2" r="12" fill="none" stroke="#ef4444" stroke-width="3"/>
+                      <text x="237.6" y="105" font-size="14" font-weight="bold" fill="#ef4444" text-anchor="middle">${intersectText}</text>`;
+        }
+      } else if (subtype === 'non_parallel_no_intersect') {
+        content = `<line x1="80" y1="100" x2="300" y2="155" stroke="#eab308" stroke-width="4" stroke-linecap="round"/>
+                   <line x1="80" y1="220" x2="300" y2="198" stroke="#eab308" stroke-width="4" stroke-linecap="round"/>`;
+        if (showSolution) {
+          content += `<line x1="300" y1="155" x2="423" y2="186" stroke="#ef4444" stroke-width="3" stroke-dasharray="6 6"/>
+                      <line x1="300" y1="198" x2="423" y2="186" stroke="#ef4444" stroke-width="3" stroke-dasharray="6 6"/>
+                      <circle cx="423" cy="186" r="12" fill="none" stroke="#ef4444" stroke-width="3"/>
+                      <text x="423" y="166" font-size="14" font-weight="bold" fill="#ef4444" text-anchor="middle">${intersectText}</text>`;
+        }
+      } else if (subtype === 'non_parallel_intersect') {
+        content = `<line x1="150" y1="50" x2="350" y2="250" stroke="#ef4444" stroke-width="4" stroke-linecap="round"/>
+                   <line x1="150" y1="250" x2="350" y2="50" stroke="#ef4444" stroke-width="4" stroke-linecap="round"/>`;
+        if (showSolution) {
+          content += `<circle cx="250" cy="150" r="12" fill="none" stroke="#ef4444" stroke-width="3"/>
+                      <text x="250" y="130" font-size="14" font-weight="bold" fill="#ef4444" text-anchor="middle">${intersectText}</text>`;
+        }
+      }
+      return `<svg viewBox="0 0 500 300" class="line-svg">${content}</svg>`;
+    }
+
+    function renderUnit1MediumSVG(polygon, showSolution = false) {
+      let content = `<polygon points="${polygon.points}" fill="#f8fafc" stroke="#3b82f6" stroke-width="4" stroke-linejoin="round" />`;
+      if (showSolution && polygon.arrows) {
+        polygon.arrows.forEach(arr => {
+          content += renderArrows(arr.p1[0], arr.p1[1], arr.p2[0], arr.p2[1], arr.type, "#16a34a");
+        });
+      }
+      return `<svg viewBox="0 0 500 300" class="line-svg">${content}</svg>`;
+    }
+
+    function renderUnit1HardSVG(letterObj, showSolution = false) {
+      let content = '';
+      letterObj.segs.forEach(seg => {
+        content += `<line x1="${seg[0]}" y1="${seg[1]}" x2="${seg[2]}" y2="${seg[3]}" stroke="#1e293b" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/>`;
+      });
+      if (letterObj.path) {
+        content += `<path d="${letterObj.path}" fill="none" stroke="#1e293b" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/>`;
+      }
+      if (showSolution) {
+        letterObj.segs.forEach(seg => {
+          if (seg[4]) {
+            content += renderArrows(seg[0], seg[1], seg[2], seg[3], seg[4], "#16a34a");
+          }
+        });
+      }
+      return `<svg viewBox="0 0 500 300" class="line-svg">${content}</svg>`;
+    }
+
+    function createOptionsGroup(labels, values) {
+      const container = document.createElement('div');
+      container.className = 'options-group';
+      labels.forEach((lbl, idx) => {
+        const btn = document.createElement('button');
+        btn.className = 'opt-btn';
+        btn.innerText = lbl;
+        btn.onclick = () => {
+          if (document.getElementById('btn-submit').classList.contains('hidden')) return;
+          document.querySelectorAll('.opt-btn').forEach(b => b.classList.remove('selected'));
+          btn.classList.add('selected');
+          currentSelectedOptionValue = values[idx];
+        };
+        container.appendChild(btn);
+      });
+      return container;
+    }
+
     function loadQuestion() {
       wrongAttempts = 0;
       selectedLineIndices = [];
       selectedGridNodes = [];
+      currentSelectedOptionValue = null;
 
       const quizCard = document.querySelector('.quiz-card');
       if (quizCard) {
@@ -979,7 +1176,7 @@
       const t = i18n[currentLang];
       const q = questions[currentQIndex];
 
-      document.getElementById('quiz-mode-name').innerText = t.unit2;
+      document.getElementById('quiz-mode-name').innerText = currentMode === 'unit1' ? t.unit1 : t.unit2;
       const tierBadge = document.getElementById('quiz-tier-badge');
       if (q.tier === 'easy') {
         tierBadge.className = 'tier-badge tier-easy';
@@ -999,23 +1196,40 @@
 
       const storyTitleText = t[q.titleKey];
 
-      const canvasContainer = document.createElement('div');
-      canvasContainer.className = 'canvas-container';
-
-      if (q.type === 'select_lines') {
-        document.getElementById('btn-reset-selection').classList.add('hidden');
-        canvasContainer.innerHTML = renderLinesSVG(q.lines, false);
-      } else {
-        document.getElementById('btn-reset-selection').classList.remove('hidden');
-        canvasContainer.innerHTML = renderGridSVG(q.baseLine, [], false);
-      }
-
-      displayArea.appendChild(canvasContainer);
-
       const qTitleEl = document.createElement('div');
       qTitleEl.className = 'q-story-title';
       qTitleEl.innerText = storyTitleText;
-      displayArea.insertBefore(qTitleEl, canvasContainer);
+      displayArea.appendChild(qTitleEl);
+
+      const canvasContainer = document.createElement('div');
+      canvasContainer.className = 'canvas-container';
+
+      if (q.unit === 1) {
+        document.getElementById('btn-reset-selection').classList.add('hidden');
+        if (q.type === 'tf_lines') {
+          canvasContainer.innerHTML = renderUnit1EasySVG(q.subtype);
+          displayArea.appendChild(canvasContainer);
+          displayArea.appendChild(createOptionsGroup([t.optYesParallel, t.optNoParallel], ['true', 'false']));
+        } else if (q.type === 'mc_polygon') {
+          canvasContainer.innerHTML = renderUnit1MediumSVG(q.polygon);
+          displayArea.appendChild(canvasContainer);
+          displayArea.appendChild(createOptionsGroup(['0' + t.optGroup, '1' + t.optGroup, '2' + t.optGroup, '3' + t.optGroup], ['0', '1', '2', '3']));
+        } else if (q.type === 'tf_letter') {
+          canvasContainer.innerHTML = renderUnit1HardSVG(q.letterObj);
+          displayArea.appendChild(canvasContainer);
+          displayArea.appendChild(createOptionsGroup([t.optYesHas, t.optNoHas], ['true', 'false']));
+        }
+      } else {
+        // Unit 2 rendering
+        if (q.type === 'select_lines') {
+          document.getElementById('btn-reset-selection').classList.add('hidden');
+          canvasContainer.innerHTML = renderLinesSVG(q.lines, false);
+        } else {
+          document.getElementById('btn-reset-selection').classList.remove('hidden');
+          canvasContainer.innerHTML = renderGridSVG(q.baseLine, [], false);
+        }
+        displayArea.appendChild(canvasContainer);
+      }
 
       document.getElementById('feedback-area').classList.add('hidden');
       document.getElementById('feedback-area').innerHTML = '';
@@ -1024,9 +1238,6 @@
       document.getElementById('btn-submit').innerText = t.submitBtn;
     }
 
-    /* -------------------------------------------------------------
-       SVG 渲染：直線選擇題
-    ------------------------------------------------------------- */
     function renderLinesSVG(lines, showSolution, wrongLineIndices = []) {
       let content = '';
 
@@ -1034,25 +1245,20 @@
         const isSelected = selectedLineIndices.includes(idx);
 
         if (!showSolution) {
-          // 常規答題模式
           const strokeColor = isSelected ? '#1e293b' : '#64748b';
           const strokeDash = isSelected ? 'none' : '6 6';
           const strokeWidth = isSelected ? 4 : 3;
 
           content += `
             <g onclick="toggleLineSelection(${idx})">
-              <!-- 熱點區域 (方便 iPad 觸控) -->
               <line x1="${line.x1}" y1="${line.y1}" x2="${line.x2}" y2="${line.y2}" class="interactive-line-hitarea" />
-              <!-- 顯示的線段 -->
               <line x1="${line.x1}" y1="${line.y1}" x2="${line.x2}" y2="${line.y2}" 
                     stroke="${strokeColor}" stroke-dasharray="${strokeDash}" stroke-width="${strokeWidth}" stroke-linecap="round" class="interactive-line" />
               ${isSelected ? `<circle cx="${(line.x1+line.x2)/2}" cy="${(line.y1+line.y2)/2}" r="5" fill="#2563eb" />` : ''}
             </g>
           `;
         } else {
-          // 題解模式：綠色高亮與延長正解，紅色延伸學生選錯的線至相交點
           if (line.isParallel) {
-            // 正確平行線：綠色高亮 + 兩端延伸綠色虛線
             const dx = line.x2 - line.x1;
             const dy = line.y2 - line.y1;
             const extX1 = line.x1 - dx * 0.4;
@@ -1066,7 +1272,6 @@
               <circle cx="${(line.x1+line.x2)/2}" cy="${(line.y1+line.y2)/2}" r="6" fill="#16a34a" />
             `;
           } else if (wrongLineIndices.includes(idx)) {
-            // 學生點選錯的直線：紅色實線，並找一條正解綠線計算真實相交點
             const targetLine = lines.find(l => l.isParallel);
             const inter = calculateIntersection(line, targetLine);
 
@@ -1075,7 +1280,6 @@
             `;
 
             if (inter) {
-              // 從線段近端點向相交點畫紅色虛線
               const dist1 = Math.hypot(line.x1 - inter.x, line.y1 - inter.y);
               const dist2 = Math.hypot(line.x2 - inter.x, line.y2 - inter.y);
               const nearX = dist1 < dist2 ? line.x1 : line.x2;
@@ -1089,46 +1293,32 @@
               `;
             }
           } else {
-            // 其他未選干擾線淡化
             content += `
               <line x1="${line.x1}" y1="${line.y1}" x2="${line.x2}" y2="${line.y2}" stroke="#94a3b8" stroke-dasharray="6 6" stroke-width="2.5" stroke-linecap="round" opacity="0.6" />
             `;
           }
         }
       });
-
-      return `
-        <svg viewBox="0 0 500 320" class="line-svg">
-          ${content}
-        </svg>
-      `;
+      return `<svg viewBox="0 0 500 320" class="line-svg">${content}</svg>`;
     }
 
-    // 計算兩直線相交點 (2D 直線交點公式)
     function calculateIntersection(l1, l2) {
       const x1 = l1.x1, y1 = l1.y1, x2 = l1.x2, y2 = l1.y2;
       const x3 = l2.x1, y3 = l2.y1, x4 = l2.x2, y4 = l2.y2;
-
       const denom = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4);
-      if (Math.abs(denom) < 1e-4) return null; // 平行無單一交點
-
+      if (Math.abs(denom) < 1e-4) return null; 
       const px = ((x1*y2 - y1*x2)*(x3 - x4) - (x1 - x2)*(x3*y4 - y3*x4)) / denom;
       const py = ((x1*y2 - y1*x2)*(y3 - y4) - (y1 - y2)*(x3*y4 - y3*x4)) / denom;
-
       return { x: px, y: py };
     }
 
-    // 計算最大公因數
     function gcd(a, b) {
       return b === 0 ? Math.abs(a) : gcd(b, a % b);
     }
 
-    // 尋找 100% 完全落在方格紙內 (8x5) 的正解平行綠線
     function getValidGridSolutionLine(b) {
       const dx = b.x2 - b.x1;
       const dy = b.y2 - b.y1;
-
-      // 候選平移向量
       const candidateShifts = [
         {ox: 0, oy: 1}, {ox: 0, oy: -1}, {ox: 1, oy: 0}, {ox: -1, oy: 0},
         {ox: 0, oy: 2}, {ox: 0, oy: -2}, {ox: 2, oy: 0}, {ox: -2, oy: 0},
@@ -1136,31 +1326,18 @@
         {ox: 0, oy: 3}, {ox: 0, oy: -3}, {ox: 3, oy: 0}, {ox: -3, oy: 0},
         {ox: 2, oy: 2}, {ox: -2, oy: -2}, {ox: 2, oy: -2}, {ox: -2, oy: 2}
       ];
-
       for (let shift of candidateShifts) {
-        // 排除與原黑線共線的平移
         if (shift.ox * dy === shift.oy * dx) continue;
-
-        const sx1 = b.x1 + shift.ox;
-        const sy1 = b.y1 + shift.oy;
-        const sx2 = b.x2 + shift.ox;
-        const sy2 = b.y2 + shift.oy;
-
-        if (sx1 >= 0 && sx1 <= 8 && sx2 >= 0 && sx2 <= 8 &&
-            sy1 >= 0 && sy1 <= 5 && sy2 >= 0 && sy2 <= 5) {
+        const sx1 = b.x1 + shift.ox, sy1 = b.y1 + shift.oy, sx2 = b.x2 + shift.ox, sy2 = b.y2 + shift.oy;
+        if (sx1 >= 0 && sx1 <= 8 && sx2 >= 0 && sx2 <= 8 && sy1 >= 0 && sy1 <= 5 && sy2 >= 0 && sy2 <= 5) {
           return { x1: sx1, y1: sy1, x2: sx2, y2: sy2 };
         }
       }
-
-      // 備用搜尋：在畫布內尋找任何不共線且平行的子線段
       const g = gcd(dx, dy) || 1;
-      const stepX = dx / g;
-      const stepY = dy / g;
-
+      const stepX = dx / g, stepY = dy / g;
       for (let gy = 0; gy <= 5; gy++) {
         for (let gx = 0; gx <= 8; gx++) {
-          const px1 = gx, py1 = gy;
-          const px2 = gx + stepX, py2 = gy + stepY;
+          const px1 = gx, py1 = gy, px2 = gx + stepX, py2 = gy + stepY;
           if (px2 >= 0 && px2 <= 8 && py2 >= 0 && py2 <= 5) {
             if ((px1 - b.x1) * dy !== (py1 - b.y1) * dx) {
               return { x1: px1, y1: py1, x2: px2, y2: py2 };
@@ -1171,16 +1348,9 @@
       return { x1: 0, y1: 0, x2: 1, y2: 0 };
     }
 
-    /* -------------------------------------------------------------
-       SVG 渲染：方格紙題型
-    ------------------------------------------------------------- */
     function renderGridSVG(baseLine, userNodes, showSolution, solutionLine = null) {
-      const startX = 50;
-      const startY = 35;
-      const step = 50;
-
+      const startX = 50, startY = 35, step = 50;
       let gridLines = '';
-      // 8 格 x 5 格網格線
       for (let c = 0; c <= 8; c++) {
         const x = startX + c * step;
         gridLines += `<line x1="${x}" y1="${startY}" x2="${x}" y2="${startY + 5*step}" stroke="#7dd3fc" stroke-width="1.5" />`;
@@ -1190,37 +1360,22 @@
         gridLines += `<line x1="${startX}" y1="${y}" x2="${startX + 8*step}" y2="${y}" stroke="#7dd3fc" stroke-width="1.5" />`;
       }
 
-      // 基準黑線
-      const bx1 = startX + baseLine.x1 * step;
-      const by1 = startY + baseLine.y1 * step;
-      const bx2 = startX + baseLine.x2 * step;
-      const by2 = startY + baseLine.y2 * step;
-
+      const bx1 = startX + baseLine.x1 * step, by1 = startY + baseLine.y1 * step;
+      const bx2 = startX + baseLine.x2 * step, by2 = startY + baseLine.y2 * step;
       let baseLineSVG = `<line x1="${bx1}" y1="${by1}" x2="${bx2}" y2="${by2}" stroke="#0f172a" stroke-width="5" stroke-linecap="round" />`;
 
-      // 使用者劃設的線
       let userLineSVG = '';
       if (userNodes.length === 2) {
-        const ux1 = startX + userNodes[0].gx * step;
-        const uy1 = startY + userNodes[0].gy * step;
-        const ux2 = startX + userNodes[1].gx * step;
-        const uy2 = startY + userNodes[1].gy * step;
-
+        const ux1 = startX + userNodes[0].gx * step, uy1 = startY + userNodes[0].gy * step;
+        const ux2 = startX + userNodes[1].gx * step, uy2 = startY + userNodes[1].gy * step;
         const lineColor = showSolution ? '#dc2626' : '#2563eb';
         userLineSVG = `<line x1="${ux1}" y1="${uy1}" x2="${ux2}" y2="${uy2}" stroke="${lineColor}" stroke-width="4.5" stroke-linecap="round" />`;
 
         if (showSolution) {
-          // 如果答錯在題解模式下，延伸學生選取的紅色虛線顯示相交
-          const userLineObj = { x1: ux1, y1: uy1, x2: ux2, y2: uy2 };
-          const baseLineObj = { x1: bx1, y1: by1, x2: bx2, y2: by2 };
-          const inter = calculateIntersection(userLineObj, baseLineObj);
-
+          const inter = calculateIntersection({ x1: ux1, y1: uy1, x2: ux2, y2: uy2 }, { x1: bx1, y1: by1, x2: bx2, y2: by2 });
           if (inter) {
-            const dist1 = Math.hypot(ux1 - inter.x, uy1 - inter.y);
-            const dist2 = Math.hypot(ux2 - inter.x, uy2 - inter.y);
-            const nearX = dist1 < dist2 ? ux1 : ux2;
-            const nearY = dist1 < dist2 ? uy1 : uy2;
-
+            const dist1 = Math.hypot(ux1 - inter.x, uy1 - inter.y), dist2 = Math.hypot(ux2 - inter.x, uy2 - inter.y);
+            const nearX = dist1 < dist2 ? ux1 : ux2, nearY = dist1 < dist2 ? uy1 : uy2;
             userLineSVG += `
               <line x1="${nearX}" y1="${nearY}" x2="${inter.x}" y2="${inter.y}" stroke="#dc2626" stroke-dasharray="4 4" stroke-width="2.5" />
               <circle cx="${inter.x}" cy="${inter.y}" r="12" fill="none" stroke="#dc2626" stroke-width="2" />
@@ -1230,14 +1385,10 @@
         }
       }
 
-      // 正解綠線 (在題解模式下顯示)
       let solutionSVG = '';
       if (showSolution && solutionLine) {
-        const sx1 = startX + solutionLine.x1 * step;
-        const sy1 = startY + solutionLine.y1 * step;
-        const sx2 = startX + solutionLine.x2 * step;
-        const sy2 = startY + solutionLine.y2 * step;
-
+        const sx1 = startX + solutionLine.x1 * step, sy1 = startY + solutionLine.y1 * step;
+        const sx2 = startX + solutionLine.x2 * step, sy2 = startY + solutionLine.y2 * step;
         solutionSVG = `
           <line x1="${sx1}" y1="${sy1}" x2="${sx2}" y2="${sy2}" stroke="#16a34a" stroke-width="5" stroke-linecap="round" />
           <circle cx="${sx1}" cy="${sy1}" r="6" fill="#16a34a" />
@@ -1245,17 +1396,13 @@
         `;
       }
 
-      // 網格節點 (觸控區塊)
       let nodesSVG = '';
       for (let r = 0; r <= 5; r++) {
         for (let c = 0; c <= 8; c++) {
-          const cx = startX + c * step;
-          const cy = startY + r * step;
+          const cx = startX + c * step, cy = startY + r * step;
           const isSelected = userNodes.some(n => n.gx === c && n.gy === r);
-
           const dotColor = isSelected ? '#2563eb' : '#94a3b8';
           const dotRadius = isSelected ? 7 : 4;
-
           nodesSVG += `
             <g onclick="toggleGridNode(${c}, ${r})">
               <circle cx="${cx}" cy="${cy}" r="22" class="grid-node-hitarea" />
@@ -1266,56 +1413,33 @@
         }
       }
 
-      return `
-        <svg viewBox="0 0 500 320" class="grid-svg">
-          ${gridLines}
-          ${baseLineSVG}
-          ${solutionSVG}
-          ${userLineSVG}
-          ${nodesSVG}
-        </svg>
-      `;
+      return `<svg viewBox="0 0 500 320" class="grid-svg">${gridLines}${baseLineSVG}${solutionSVG}${userLineSVG}${nodesSVG}</svg>`;
     }
 
-    /* -------------------------------------------------------------
-       點選與互動邏輯
-    ------------------------------------------------------------- */
     function toggleLineSelection(idx) {
       if (document.getElementById('btn-submit').classList.contains('hidden')) return;
-
       const pos = selectedLineIndices.indexOf(idx);
-      if (pos > -1) {
-        selectedLineIndices.splice(pos, 1);
-      } else {
-        selectedLineIndices.push(idx);
-      }
+      if (pos > -1) selectedLineIndices.splice(pos, 1);
+      else selectedLineIndices.push(idx);
 
       const q = questions[currentQIndex];
       const canvasContainer = document.querySelector('.canvas-container');
-      if (canvasContainer) {
-        canvasContainer.innerHTML = renderLinesSVG(q.lines, false);
-      }
+      if (canvasContainer) canvasContainer.innerHTML = renderLinesSVG(q.lines, false);
     }
 
     function toggleGridNode(gx, gy) {
       if (document.getElementById('btn-submit').classList.contains('hidden')) return;
-
       const idx = selectedGridNodes.findIndex(n => n.gx === gx && n.gy === gy);
       if (idx > -1) {
         selectedGridNodes.splice(idx, 1);
       } else {
-        if (selectedGridNodes.length < 2) {
-          selectedGridNodes.push({ gx, gy });
-        } else {
-          selectedGridNodes = [{ gx, gy }]; // 超過2個點時重選
-        }
+        if (selectedGridNodes.length < 2) selectedGridNodes.push({ gx, gy });
+        else selectedGridNodes = [{ gx, gy }];
       }
 
       const q = questions[currentQIndex];
       const canvasContainer = document.querySelector('.canvas-container');
-      if (canvasContainer) {
-        canvasContainer.innerHTML = renderGridSVG(q.baseLine, selectedGridNodes, false);
-      }
+      if (canvasContainer) canvasContainer.innerHTML = renderGridSVG(q.baseLine, selectedGridNodes, false);
     }
 
     function resetCurrentSelection() {
@@ -1324,11 +1448,8 @@
       const q = questions[currentQIndex];
       const canvasContainer = document.querySelector('.canvas-container');
       if (canvasContainer) {
-        if (q.type === 'select_lines') {
-          canvasContainer.innerHTML = renderLinesSVG(q.lines, false);
-        } else {
-          canvasContainer.innerHTML = renderGridSVG(q.baseLine, [], false);
-        }
+        if (q.type === 'select_lines') canvasContainer.innerHTML = renderLinesSVG(q.lines, false);
+        else canvasContainer.innerHTML = renderGridSVG(q.baseLine, [], false);
       }
     }
 
@@ -1343,65 +1464,73 @@
       let isCorrect = false;
       let userAnsDisplay = "";
       let wrongLines = [];
+      let targetAnsStr = "";
 
-      if (q.type === 'select_lines') {
-        if (selectedLineIndices.length === 0) {
-          alert(currentLang === 'zh' ? "請點選畫面上的虛線作答！" : "Please tap lines on the screen to answer!");
+      if (q.unit === 1) {
+        if (currentSelectedOptionValue === null) {
+          alert(currentLang === 'zh' ? "請選擇一個答案！" : "Please select an answer!");
           return;
         }
 
-        const selectedCount = selectedLineIndices.length;
-        userAnsDisplay = currentLang === 'zh' ? `點選了 ${selectedCount} 條直線` : `Selected ${selectedCount} line(s)`;
-
-        // 判斷選取的直線是否為正確的平行線組
-        const correctParallelIndices = q.lines.map((l, i) => l.isParallel ? i : -1).filter(i => i !== -1);
-        const wrongSelected = selectedLineIndices.filter(i => !q.lines[i].isParallel);
-        wrongLines = wrongSelected;
-
-        isCorrect = (
-          selectedLineIndices.length === correctParallelIndices.length &&
-          wrongSelected.length === 0 &&
-          correctParallelIndices.every(i => selectedLineIndices.includes(i))
-        );
-      } else { // 方格紙題型
-        if (selectedGridNodes.length < 2) {
-          alert(currentLang === 'zh' ? "請在方格紙上點選 2 個點以連成直線！" : "Please select 2 points on grid paper to draw a line!");
-          return;
+        if (q.type === 'tf_lines') {
+            userAnsDisplay = currentSelectedOptionValue === 'true' ? t.optYesParallel : t.optNoParallel;
+            targetAnsStr = q.answer ? t.optYesParallel : t.optNoParallel;
+            isCorrect = (currentSelectedOptionValue === q.answer.toString());
+        } else if (q.type === 'mc_polygon') {
+            userAnsDisplay = currentSelectedOptionValue + t.optGroup;
+            targetAnsStr = q.answer + t.optGroup;
+            isCorrect = (currentSelectedOptionValue === q.answer.toString());
+        } else if (q.type === 'tf_letter') {
+            userAnsDisplay = currentSelectedOptionValue === 'true' ? t.optYesHas : t.optNoHas;
+            targetAnsStr = q.answer ? t.optYesHas : t.optNoHas;
+            isCorrect = (currentSelectedOptionValue === q.answer.toString());
         }
+      } else {
+        // Unit 2 check logic
+        if (q.type === 'select_lines') {
+          if (selectedLineIndices.length === 0) {
+            alert(currentLang === 'zh' ? "請點選畫面上的虛線作答！" : "Please tap lines on the screen to answer!");
+            return;
+          }
+          const selectedCount = selectedLineIndices.length;
+          userAnsDisplay = currentLang === 'zh' ? `點選了 ${selectedCount} 條直線` : `Selected ${selectedCount} line(s)`;
+          targetAnsStr = currentLang === 'zh' ? `選取 ${q.targetCount} 條平行線` : `Select ${q.targetCount} parallel lines`;
 
-        const p1 = selectedGridNodes[0];
-        const p2 = selectedGridNodes[1];
-        userAnsDisplay = `(${p1.gx},${p1.gy}) ➔ (${p2.gx},${p2.gy})`;
+          const correctParallelIndices = q.lines.map((l, i) => l.isParallel ? i : -1).filter(i => i !== -1);
+          const wrongSelected = selectedLineIndices.filter(i => !q.lines[i].isParallel);
+          wrongLines = wrongSelected;
 
-        const b = q.baseLine;
-        const dux = p2.gx - p1.gx;
-        const duy = p2.gy - p1.gy;
-        const dbx = b.x2 - b.x1;
-        const dby = b.y2 - b.y1;
+          isCorrect = (
+            selectedLineIndices.length === correctParallelIndices.length &&
+            wrongSelected.length === 0 &&
+            correctParallelIndices.every(i => selectedLineIndices.includes(i))
+          );
+        } else {
+          if (selectedGridNodes.length < 2) {
+            alert(currentLang === 'zh' ? "請在方格紙上點選 2 個點以連成直線！" : "Please select 2 points on grid paper to draw a line!");
+            return;
+          }
+          const p1 = selectedGridNodes[0];
+          const p2 = selectedGridNodes[1];
+          userAnsDisplay = `(${p1.gx},${p1.gy}) ➔ (${p2.gx},${p2.gy})`;
+          targetAnsStr = currentLang === 'zh' ? "與黑線平行的直線" : "Line parallel to black line";
 
-        // 1. 檢查是否平行：斜率相等 (dux * dby === duy * dbx)
-        const isParallelSlope = (dux * dby === duy * dbx);
+          const b = q.baseLine;
+          const dux = p2.gx - p1.gx, duy = p2.gy - p1.gy;
+          const dbx = b.x2 - b.x1, dby = b.y2 - b.y1;
 
-        // 2. 檢查是否重疊在黑線上 (三點共線)
-        const isCollinearWithBase = ( (p1.gx - b.x1) * dby === (p1.gy - b.y1) * dbx );
+          const isParallelSlope = (dux * dby === duy * dbx);
+          const isCollinearWithBase = ( (p1.gx - b.x1) * dby === (p1.gy - b.y1) * dbx );
 
-        // 只要斜率相等且不在同一條直線上重疊即可，不限制長度
-        isCorrect = isParallelSlope && !isCollinearWithBase;
+          isCorrect = isParallelSlope && !isCollinearWithBase;
+        }
       }
 
-      // 紀錄答題歷程
       if (!records[currentQIndex]) {
-        let targetAnsText = "";
-        if (q.type === 'select_lines') {
-          targetAnsText = currentLang === 'zh' ? `選取 ${q.targetCount} 條平行線` : `Select ${q.targetCount} parallel lines`;
-        } else {
-          targetAnsText = currentLang === 'zh' ? "與黑線平行的直線" : "Line parallel to black line";
-        }
-
         records[currentQIndex] = {
           qIndex: currentQIndex + 1,
           questionObj: q,
-          targetAns: targetAnsText,
+          targetAns: targetAnsStr,
           userFirstWrong: null,
           isCorrectOnFirstTry: false,
           solved: false
@@ -1409,9 +1538,7 @@
       }
 
       if (isCorrect) {
-        if (wrongAttempts === 0) {
-          records[currentQIndex].isCorrectOnFirstTry = true;
-        }
+        if (wrongAttempts === 0) records[currentQIndex].isCorrectOnFirstTry = true;
         records[currentQIndex].solved = true;
 
         const randomPraise = t.praise[Math.floor(Math.random() * t.praise.length)];
@@ -1422,6 +1549,14 @@
         document.getElementById('btn-submit').classList.add('hidden');
         document.getElementById('btn-next').classList.remove('hidden');
         document.getElementById('btn-next').focus();
+        
+        // Disable option buttons for Unit 1
+        if (q.unit === 1) {
+            document.querySelectorAll('.opt-btn').forEach(b => {
+              b.disabled = true;
+              b.classList.remove('wrong-selected');
+            });
+        }
       } else {
         wrongAttempts++;
         if (records[currentQIndex].userFirstWrong === null) {
@@ -1430,86 +1565,106 @@
 
         triggerShakeAnimation();
 
-        if (wrongAttempts === 1) {
-          // 第一次答錯：給予極具引導性的步驟提示
-          let hintText = "";
-          if (q.type === 'select_lines') {
-            hintText = currentLang === 'zh' ? `
-              <div><strong>${t.encourage[Math.floor(Math.random() * t.encourage.length)]}</strong></div>
-              <div style="margin-top:8px;">
-                💡 <strong>觀念與觀察引導：</strong><br>
-                1. 平行線之間的距離處處相等，兩端無限延長後<strong>永遠不會相交</strong>。<br>
-                2. 請觀察直線的傾斜角度，找出方向完全一致的 ${q.targetCount} 條虛線！
-              </div>
-            ` : `
-              <div><strong>${t.encourage[Math.floor(Math.random() * t.encourage.length)]}</strong></div>
-              <div style="margin-top:8px;">
-                💡 <strong>Guided Thinking:</strong><br>
-                1. Parallel lines remain equidistant and <strong>never intersect</strong>.<br>
-                2. Observe line angles and select the ${q.targetCount} lines pointing in the exact same direction!
-              </div>
-            `;
+        if (q.unit === 1) {
+          // Unit 1 Feedback
+          if (q.tier === 'easy' || q.tier === 'hard') {
+            wrongAttempts = 2; // 初階與高階只有2選項，直接跳至詳解
+          }
+          
+          if (wrongAttempts === 1) {
+            // 中階的第一次答錯反饋
+            document.querySelectorAll('.opt-btn').forEach(b => {
+              if (b.classList.contains('selected')) b.classList.add('wrong-selected');
+            });
+            const hintText = currentLang === 'zh' ? "不對喔！請重新觀察，有沒有方向完全一致的對邊？（你選的答案已標為紅色）" : "Incorrect! Please check again, are there opposite sides pointing in the exact same direction? (Your selection is marked in red)";
+            feedback.className = "feedback-box feedback-warning";
+            feedback.innerHTML = `<div><strong>${t.encourage[Math.floor(Math.random() * t.encourage.length)]}</strong></div><div style="margin-top:8px;">💡 ${hintText}</div>`;
+            feedback.classList.remove('hidden');
           } else {
-            // 方格紙題型具體引導提示
-            const b = q.baseLine;
-            const dx = Math.abs(b.x2 - b.x1);
-            const dy = Math.abs(b.y2 - b.y1);
-
-            let stepGuide = "";
-            if (q.orientation === 'vertical') {
-              stepGuide = currentLang === 'zh' 
-                ? `請找另一條直格線，點選<strong>上下相隔 ${dy} 格</strong>（直向數 ${dy} 格）的 2 個點。`
-                : `Choose another vertical grid line and pick 2 points spaced <strong>${dy} grid units vertically</strong>.`;
-            } else if (q.orientation === 'horizontal') {
-              stepGuide = currentLang === 'zh'
-                ? `請找另一條橫格線，點選<strong>左右相隔 ${dx} 格</strong>（橫向數 ${dx} 格）的 2 個點。`
-                : `Choose another horizontal grid line and pick 2 points spaced <strong>${dx} grid units horizontally</strong>.`;
-            } else {
-              stepGuide = currentLang === 'zh'
-                ? `觀察黑線是「橫向走 ${dx} 格、直向走 ${dy} 格」，在別處選一個點為起點，同樣橫向走 ${dx} 格、直向走 ${dy} 格點選第二個點。`
-                : `Observe the black line (moves ${dx} grids horizontally and ${dy} vertically). Pick a start node and move by the exact same grid count for the 2nd point.`;
+            // 提供完整題解
+            let solutionFeedback = "";
+            const canvasContainer = document.querySelector('.canvas-container');
+            
+            if (q.tier === 'easy') {
+               canvasContainer.innerHTML = renderUnit1EasySVG(q.subtype, true);
+               if (q.subtype === 'intersecting_not_perp') {
+                   solutionFeedback = currentLang === 'zh' ? "這兩條線已經相交於紅點（有交點），所以不是平行線。" : "These two lines intersect at the red point, so they are not parallel lines.";
+               } else if (q.subtype === 'perpendicular') {
+                   solutionFeedback = currentLang === 'zh' ? "這兩條線垂直相交成直角。互相垂直的線必定會相交，所以<strong>垂直線絕對不是平行線</strong>！" : "These lines intersect at a right angle. Perpendicular lines intersect, so they are <strong>never parallel</strong>!";
+               } else if (q.subtype === 'non_parallel_no_intersect') {
+                   solutionFeedback = currentLang === 'zh' ? "將兩條直線延長後（紅色虛線），它們最終會相交，所以不是平行線。" : "When extended (red dashed lines), they eventually intersect, so they are not parallel lines.";
+               } else if (q.subtype === 'curves') {
+                   solutionFeedback = currentLang === 'zh' ? "平行線必須是「直線」。雖然這兩條曲線看似距離相等，但因為不是直線，所以不是平行線。" : "Parallel lines must be 'straight'. Although these curves seem equidistant, they are not straight lines, thus not parallel.";
+               } else if (q.subtype === 'parallel_diff_length') {
+                   solutionFeedback = currentLang === 'zh' ? "平行線的定義是：兩條直線處處距離相等，且無限延長也不會相交。長度不同並不影響它們互相平行！" : "Definition of parallel lines: straight lines that are always equidistant and never intersect, regardless of length!";
+               } else if (q.subtype === 'parallel_far_apart') {
+                   solutionFeedback = currentLang === 'zh' ? "這兩條線雖然位置分開得比較遠，但它們的方向完全一致，處處距離相等，所以是平行線！" : "Even though they are far apart, they point in the exact same direction and are equidistant, so they are parallel!";
+               }
+            } else if (q.tier === 'medium') {
+               canvasContainer.innerHTML = renderUnit1MediumSVG(q.polygon, true);
+               solutionFeedback = currentLang === 'zh' ? `正確答案是 <strong>${targetAnsStr}</strong>。圖中已用綠色箭頭為您標示出互相平行的對邊。` : `The correct answer is <strong>${targetAnsStr}</strong>. The parallel opposite sides have been marked for you with green arrows.`;
+            } else if (q.tier === 'hard') {
+               canvasContainer.innerHTML = renderUnit1HardSVG(q.letterObj, true);
+               if (q.answer === true) {
+                   solutionFeedback = currentLang === 'zh' ? "這個字母中包含了互相平行的筆畫（見圖中綠色箭頭標示）。" : "This letter contains parallel strokes (see green arrows).";
+               } else {
+                   solutionFeedback = currentLang === 'zh' ? "平行線必須是永遠不相交的直線。這個字母中的筆畫要麼已經相交，要麼延長後會相交，因此沒有平行線。" : "Parallel lines never intersect. The strokes in this letter either intersect or will intersect if extended, so no parallel lines.";
+               }
             }
-
-            hintText = currentLang === 'zh' ? `
-              <div><strong>${t.encourage[Math.floor(Math.random() * t.encourage.length)]}</strong></div>
-              <div style="margin-top:8px;">
-                💡 <strong>解題步驟提示：</strong><br>
-                ${stepGuide}<br>
-                （注意：連線不可與原黑線在同一條線上重疊喔！）
-              </div>
-            ` : `
-              <div><strong>${t.encourage[Math.floor(Math.random() * t.encourage.length)]}</strong></div>
-              <div style="margin-top:8px;">
-                💡 <strong>Step-by-Step Hint:</strong><br>
-                ${stepGuide}
-              </div>
-            `;
+            
+            feedback.className = "feedback-box feedback-danger";
+            feedback.innerHTML = `<div><strong>${t.stepTitle}</strong></div><div style="margin-top:6px;">${solutionFeedback}</div>`;
+            document.getElementById('btn-submit').classList.add('hidden');
+            document.getElementById('btn-next').classList.remove('hidden');
+            document.getElementById('btn-next').focus();
+            
+            document.querySelectorAll('.opt-btn').forEach(b => {
+                b.disabled = true;
+                b.classList.remove('wrong-selected');
+                if(b.innerText === targetAnsStr) {
+                    b.classList.add('selected');
+                    b.style.borderColor = '#16a34a';
+                    b.style.backgroundColor = '#f0fff4';
+                    b.style.color = '#16a34a';
+                } else {
+                    b.classList.remove('selected');
+                }
+            });
+            feedback.classList.remove('hidden');
           }
-
-          feedback.className = "feedback-box feedback-warning";
-          feedback.innerHTML = hintText;
-          feedback.classList.remove('hidden');
         } else {
-          // 第二次答錯：在圖上以綠線顯示正確答案，紅線延伸顯示相交點 (✕)
-          const canvasContainer = document.querySelector('.canvas-container');
-
-          if (q.type === 'select_lines') {
-            canvasContainer.innerHTML = renderLinesSVG(q.lines, true, wrongLines);
-            feedback.className = "feedback-box feedback-danger";
-            feedback.innerHTML = `<div><strong>${t.stepTitle}</strong></div><div style="margin-top:6px;">${t.lineSolutionText}</div>`;
+          // Unit 2 Feedback
+          if (wrongAttempts === 1) {
+            let hintText = "";
+            if (q.type === 'select_lines') {
+              hintText = currentLang === 'zh' ? `1. 平行線之間的距離處處相等，兩端無限延長後<strong>永遠不會相交</strong>。<br>2. 請觀察直線的傾斜角度，找出方向完全一致的 ${q.targetCount} 條虛線！` : `1. Parallel lines remain equidistant and <strong>never intersect</strong>.<br>2. Observe line angles and select the ${q.targetCount} lines pointing in the exact same direction!`;
+            } else {
+              const b = q.baseLine;
+              const dx = Math.abs(b.x2 - b.x1), dy = Math.abs(b.y2 - b.y1);
+              if (q.orientation === 'vertical') hintText = currentLang === 'zh' ? `請找另一條直格線，點選上下相隔 ${dy} 格的 2 個點。` : `Choose another vertical grid line and pick 2 points spaced ${dy} grid units vertically.`;
+              else if (q.orientation === 'horizontal') hintText = currentLang === 'zh' ? `請找另一條橫格線，點選左右相隔 ${dx} 格的 2 個點。` : `Choose another horizontal grid line and pick 2 points spaced ${dx} grid units horizontally.`;
+              else hintText = currentLang === 'zh' ? `觀察黑線橫向走 ${dx} 格、直向走 ${dy} 格。選一個起點，同樣走法點選第二點。` : `Observe the black line moves ${dx} horizontally and ${dy} vertically. Match this on another spot.`;
+            }
+            feedback.className = "feedback-box feedback-warning";
+            feedback.innerHTML = `<div><strong>${t.encourage[Math.floor(Math.random() * t.encourage.length)]}</strong></div><div style="margin-top:8px;">💡 <strong>提示：</strong><br>${hintText}</div>`;
+            feedback.classList.remove('hidden');
           } else {
-            // 計算嚴格保證留在方格紙 (8x5) 內的正解平行線段
-            const solLine = getValidGridSolutionLine(q.baseLine);
-
-            canvasContainer.innerHTML = renderGridSVG(q.baseLine, selectedGridNodes, true, solLine);
-            feedback.className = "feedback-box feedback-danger";
-            feedback.innerHTML = `<div><strong>${t.stepTitle}</strong></div><div style="margin-top:6px;">${t.gridSolutionText}</div>`;
+            const canvasContainer = document.querySelector('.canvas-container');
+            if (q.type === 'select_lines') {
+              canvasContainer.innerHTML = renderLinesSVG(q.lines, true, wrongLines);
+              feedback.className = "feedback-box feedback-danger";
+              feedback.innerHTML = `<div><strong>${t.stepTitle}</strong></div><div style="margin-top:6px;">${t.lineSolutionText}</div>`;
+            } else {
+              const solLine = getValidGridSolutionLine(q.baseLine);
+              canvasContainer.innerHTML = renderGridSVG(q.baseLine, selectedGridNodes, true, solLine);
+              feedback.className = "feedback-box feedback-danger";
+              feedback.innerHTML = `<div><strong>${t.stepTitle}</strong></div><div style="margin-top:6px;">${t.gridSolutionText}</div>`;
+            }
+            feedback.classList.remove('hidden');
+            document.getElementById('btn-submit').classList.add('hidden');
+            document.getElementById('btn-next').classList.remove('hidden');
+            document.getElementById('btn-next').focus();
           }
-
-          feedback.classList.remove('hidden');
-          document.getElementById('btn-submit').classList.add('hidden');
-          document.getElementById('btn-next').classList.remove('hidden');
-          document.getElementById('btn-next').focus();
         }
       }
     }
@@ -1537,7 +1692,6 @@
       document.getElementById('title-unit2').innerText = t.titleUnit2;
       document.getElementById('desc-opt1').innerText = t.descOpt1;
       document.getElementById('desc-opt2').innerText = t.descOpt2;
-      document.getElementById('tag-unit1-status').innerText = t.tagUnit1Status;
       document.getElementById('lbl-back-btn').innerText = t.backBtn;
 
       if (!document.getElementById('page-quiz').classList.contains('hidden')) {
@@ -1556,22 +1710,18 @@
       const diffSecs = Math.floor((end - start) / 1000);
       const mins = Math.floor(diffSecs / 60);
       const secs = diffSecs % 60;
-      if (currentLang === 'zh') {
-        return `${mins} 分 ${secs} 秒`;
-      }
-      return `${mins}m ${secs}s`;
+      return currentLang === 'zh' ? `${mins} 分 ${secs} 秒` : `${mins}m ${secs}s`;
     }
 
     function getQuestionSummaryText(q) {
-      if (q.type === 'select_lines') {
-        return currentLang === 'zh' 
-          ? `沿虛線選取 ${q.targetCount} 條平行線` 
-          : `Select ${q.targetCount} parallel lines along dashed lines`;
+      if (q.unit === 1) {
+        if (q.type === 'tf_lines') return currentLang === 'zh' ? `判斷線條是否平行` : `Determine if lines are parallel`;
+        if (q.type === 'mc_polygon') return currentLang === 'zh' ? `計算多邊形平行線組數 (${q.polygon.name})` : `Count parallel groups in polygon`;
+        if (q.type === 'tf_letter') return currentLang === 'zh' ? `判斷字母是否有平行線 (${q.letterObj.letter})` : `Check for parallel lines in letter ${q.letterObj.letter}`;
       } else {
+        if (q.type === 'select_lines') return currentLang === 'zh' ? `沿虛線選取 ${q.targetCount} 條平行線` : `Select ${q.targetCount} parallel lines along dashed lines`;
         const b = q.baseLine;
-        return currentLang === 'zh'
-          ? `在 8x5 方格紙劃出平行線（黑線基準: ${b.x1},${b.y1} 至 ${b.x2},${b.y2}）`
-          : `Draw parallel line on 8x5 grid (Base: ${b.x1},${b.y1} to ${b.x2},${b.y2})`;
+        return currentLang === 'zh' ? `在 8x5 方格紙劃出平行線` : `Draw parallel line on 8x5 grid`;
       }
     }
 
@@ -1600,7 +1750,6 @@
       document.getElementById('lbl-mastery-title').innerText = t.masteryTitle;
       document.getElementById('lbl-correct-title').innerText = t.correctTitle;
       document.getElementById('lbl-wrong-title').innerText = t.wrongTitle;
-
       document.getElementById('lbl-btn-download').innerText = t.btnDownload;
       document.getElementById('lbl-btn-retry').innerText = t.btnRetry;
       document.getElementById('lbl-btn-home').innerText = t.btnHome;
@@ -1610,14 +1759,11 @@
       document.getElementById('val-duration').innerText = formatDuration(startTimeObj, endTimeObj);
 
       let correctCount = 0;
-      records.forEach(r => {
-        if (r && r.isCorrectOnFirstTry) correctCount++;
-      });
-
+      records.forEach(r => { if (r && r.isCorrectOnFirstTry) correctCount++; });
       const total = questions.length;
       const accuracyPct = Math.round((correctCount / total) * 100);
 
-      document.getElementById('report-unit-name').innerText = t.unit2;
+      document.getElementById('report-unit-name').innerText = currentMode === 'unit1' ? t.unit1 : t.unit2;
       document.getElementById('val-unit-mastery').innerText = `${correctCount} / ${total} (${accuracyPct}%)`;
 
       const correctContainer = document.getElementById('correct-list-container');
@@ -1630,13 +1776,11 @@
         correctItems.forEach(item => {
           const qText = t.questionLabel.replace('{n}', item.qIndex);
           const qExprText = getQuestionSummaryText(item.questionObj);
-          const itemDiv = document.createElement('div');
-          itemDiv.className = 'item-card-correct';
-          itemDiv.innerHTML = `
-            <div class="item-q-title" style="font-weight:bold;">${qText} : ${qExprText}</div>
-            <div class="item-ans-text">${t.ansLabel} : ${item.targetAns}</div>
-          `;
-          correctContainer.appendChild(itemDiv);
+          correctContainer.innerHTML += `
+            <div class="item-card-correct">
+              <div class="item-q-title" style="font-weight:bold;">${qText} : ${qExprText}</div>
+              <div class="item-ans-text">${t.ansLabel} : ${item.targetAns}</div>
+            </div>`;
         });
       }
 
@@ -1652,13 +1796,11 @@
           const qText = t.questionLabel.replace('{n}', item.qIndex);
           const qExprText = getQuestionSummaryText(item.questionObj);
           const userAnsDisplay = item.userFirstWrong !== null ? item.userFirstWrong : '-';
-          const itemDiv = document.createElement('div');
-          itemDiv.className = 'item-card-wrong';
-          itemDiv.innerHTML = `
-            <div class="item-q-title" style="font-weight:bold;">${qText} : ${qExprText}</div>
-            <div class="item-ans-text">${t.yourAnsLabel} : ${userAnsDisplay} | ${t.correctAnsLabel} : ${item.targetAns}</div>
-          `;
-          wrongContainer.appendChild(itemDiv);
+          wrongContainer.innerHTML += `
+            <div class="item-card-wrong">
+              <div class="item-q-title" style="font-weight:bold;">${qText} : ${qExprText}</div>
+              <div class="item-ans-text">${t.yourAnsLabel} : ${userAnsDisplay} | ${t.correctAnsLabel} : ${item.targetAns}</div>
+            </div>`;
         });
       }
     }
@@ -1676,23 +1818,16 @@
 
     function askReturnHome() {
       const t = i18n[currentLang];
-      showCustomModal(t.modalReturnTitle, t.modalReturnMsg, () => {
-        goHome();
-      });
+      showCustomModal(t.modalReturnTitle, t.modalReturnMsg, () => { goHome(); });
     }
 
     function showCustomModal(title, msg, onConfirm) {
       document.getElementById('modal-title').innerText = title;
       document.getElementById('modal-msg').innerText = msg;
       modalActionCallback = onConfirm;
-
       const cancelBtn = document.getElementById('modal-cancel-btn');
-      if (onConfirm) {
-        cancelBtn.classList.remove('hidden');
-      } else {
-        cancelBtn.classList.add('hidden');
-      }
-
+      if (onConfirm) cancelBtn.classList.remove('hidden');
+      else cancelBtn.classList.add('hidden');
       document.getElementById('custom-modal').classList.add('active');
     }
 
@@ -1702,9 +1837,7 @@
     }
 
     function confirmModalAction() {
-      if (modalActionCallback) {
-        modalActionCallback();
-      }
+      if (modalActionCallback) modalActionCallback();
       closeModal();
     }
 
